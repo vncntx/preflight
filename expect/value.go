@@ -90,7 +90,7 @@ func (e *ExpectedValue) HaveLength(expected int) {
 
 // Equals asserts equality to an expected value
 func (e *ExpectedValue) Equals(expected interface{}) {
-	if e.Actual != expected {
+	if !equal(e.Actual, expected) {
 		e.Errorf("%s: %#v != %#v", e.Name(), e.Actual, expected)
 	}
 }

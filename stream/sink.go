@@ -2,14 +2,11 @@ package stream
 
 import (
 	"errors"
-	"fmt"
 	"io"
-	"io/fs"
 	"net/http"
 	"os"
 	"testing"
 
-	"preflight/errs"
 	"preflight/expect"
 )
 
@@ -18,39 +15,39 @@ type Sink struct {
 	*testing.T
 
 	r   *os.File
-	w   *os.File
-	i   fs.FileInfo
 	buf []byte
 }
 
 // FromWritable returns a new Sink
 func FromWritable(t *testing.T, consumer Consumer) Stream {
-	r, w, err := os.Pipe()
+	w, err := os.CreateTemp(os.TempDir(), "preflight-")
 	if err != nil {
 		return Faulty(t, err)
 	}
 
 	consumer(w)
 
+	// open for reading
+	r, err := os.OpenFile(w.Name(), os.O_RDONLY, 0)
+	if err != nil {
+		return Faulty(t, err)
+	}
+
 	return &Sink{
-		T: t,
-		r: r,
-		w: w,
+		T:   t,
+		r:   r,
 		buf: make([]byte, 0, bufferSize),
 	}
 
 }
 
-// Close the underlying streams
+// Close and the stream
 func (s *Sink) Close() error {
-	fmt.Printf("closing %v, %v\n", s.r, s.w)
-
-	re, we := s.r.Close(), s.w.Close()
-	if re != nil || we != nil {
-		return errs.Combine(re, we)
+	if err := s.r.Close(); err != nil {
+		return err
 	}
 
-	return nil
+	return os.Remove(s.r.Name())
 }
 
 // Size returns an Expectation about the number of bytes written

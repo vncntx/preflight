@@ -43,18 +43,3 @@ func (t *Test) ExpectWritten(consumer stream.Consumer) stream.Stream {
 
 // 	return t.Expect(exitCode)
 // }
-
-func (t *Test) createStream() (r *os.File, w *os.File) {
-	r, w, err := os.Pipe()
-	if err != nil {
-		t.Errorf("%s: failed to create stream: %w", t.Name(), err)
-	}
-
-	return r, w
-}
-
-func (t *Test) closeStream(stream *os.File) {
-	if err := stream.Close(); err != nil {
-		t.Errorf("%s: failed to close stream %s: %w", t.Name(), stream.Name(), err)
-	}
-}
