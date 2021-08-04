@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"preflight/expect"
+	"preflight/scaffold"
 	"preflight/stream"
 )
 
@@ -28,18 +29,9 @@ func (t *Test) ExpectWritten(consumer stream.Consumer) stream.Stream {
 	return stream.FromWritable(t.T, consumer)
 }
 
-// ExpectExitCode overrides the scaffolding osExit function
-// func (t *Test) ExpectExitCode(act Action) expect.Expectation {
-// 	var exitCode int
+// ExpectExitCode returns an expectation about a captured exit code
+func (t *Test) ExpectExitCode(act scaffold.Action) expect.Expectation {
+	code := Scaffold.CaptureExitCode(act)
 
-// 	// capture exit code through scaffold
-// 	Scaffold.OSExit = func(code int) {
-// 		exitCode = code
-// 	}
-// 	defer Scaffold.Restore()
-
-// 	// invoke the action
-// 	act()
-
-// 	return t.Expect(exitCode)
-// }
+	return expect.Value(t.T, code)
+}

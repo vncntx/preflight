@@ -1,6 +1,7 @@
 package preflight
 
-func init() {
-	Scaffold = &scaffold{}
-	Scaffold.Restore()
-}
+import "preflight/scaffold"
+
+var (
+	Scaffold = scaffold.New()
+)
