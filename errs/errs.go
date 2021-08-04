@@ -8,7 +8,7 @@ type CombinedError struct {
 }
 
 // Combine returns a new CombinedError
-func Combine(errors... error) *CombinedError {
+func Combine(errors ...error) *CombinedError {
 	return &CombinedError{errors}
 }
 

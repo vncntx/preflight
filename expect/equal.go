@@ -1,8 +1,9 @@
 package expect
 
 import (
-	"preflight/expect/kind"
 	"reflect"
+
+	"preflight/expect/kind"
 )
 
 func equal(a, b interface{}) bool {
