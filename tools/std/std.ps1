@@ -70,7 +70,7 @@ class CodeErrorCollection {
     Add([String]$Log, [String]$Pattern) {
         $parsed = Select-String -Pattern $Pattern -InputObject $Log
         $file, $loc, $txt = $parsed.Matches.Groups[1..3].Value
-        $this.Add($file, $loc, $txt)        
+        $this.Add($file, $loc, $txt)
     }
 
     [Int]Count() {
@@ -100,12 +100,12 @@ class CodeExcerpt {
 
 class CodeIssue {
     [String]$Text
-    [String]$Linter
+    [String]$Detector
     [CodeExcerpt]$Excerpt
 
-    CodeIssue([String]$Text, [String]$Linter, [CodeExcerpt]$Excerpt) {
+    CodeIssue([String]$Text, [String]$Detector, [CodeExcerpt]$Excerpt) {
         $this.Text = $Text
-        $this.Linter = $Linter
+        $this.Detector = $Detector
         $this.Excerpt = $Excerpt
     }
 
@@ -114,8 +114,8 @@ class CodeIssue {
 
         Write-Host -NoNewline -ForegroundColor Red 'error'.PadLeft($padding)
         Write-Host -NoNewline ' : '
-        Write-Host -NoNewline -ForegroundColor Black -BackgroundColor White " $($this.Linter) "
-        Write-Host " in `e[4m$($this.Excerpt.File)`e[24m @ $($this.Excerpt.Line):$($this.Excerpt.Column)".PadLeft($padding)
+        Write-Host -NoNewline -ForegroundColor Black -BackgroundColor White " $($this.Detector) "
+        Write-Host " in `e[3m$($this.Excerpt.File)`e[0m @ `e[4m$($this.Excerpt.Line):$($this.Excerpt.Column)`e[24m".PadLeft($padding)
         Write-Host ''
         Write-Host ''.PadLeft($padding) "  $($this.Text)"
         Write-Host ''
@@ -159,6 +159,18 @@ function Write-Log {
 
     Write-Host -NoNewline -ForegroundColor $Color $Level.PadLeft($Padding)
     Write-Host " : $Message"
+}
+
+<#
+.SYNOPSIS
+Return a blank string with the default padding length
+
+.EXAMPLE
+Get-Pad
+#>
+function Get-Pad {
+    $pad = $env:LOG_PADDING ?? 5
+    return ''.PadLeft($pad)
 }
 
 <#
