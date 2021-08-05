@@ -1,9 +1,10 @@
 package kind_test
 
 import (
+	"testing"
+
 	"preflight"
 	"preflight/expect/kind"
-	"testing"
 )
 
 func TestOf(test *testing.T) {

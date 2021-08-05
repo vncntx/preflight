@@ -2,9 +2,10 @@ package errs_test
 
 import (
 	"errors"
+	"testing"
+
 	"preflight"
 	"preflight/errs"
-	"testing"
 )
 
 func TestCombine(test *testing.T) {
