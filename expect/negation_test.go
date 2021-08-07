@@ -1,9 +1,10 @@
 package expect_test
 
 import (
+	"testing"
+
 	"preflight"
 	"preflight/expect"
-	"testing"
 )
 
 func TestNegation(test *testing.T) {
@@ -87,13 +88,12 @@ func TestNegationMapHasLength(test *testing.T) {
 func TestNegationEquals(test *testing.T) {
 	t := preflight.Unit(test)
 
-	expected := 343
-	v := expect.Value(t.T, expected / 7)
+	v := expect.Value(t.T, 343)
 
-	v.Not().Eq(expected)
-	v.Not().Equal(expected)
-	v.Not().Equals(expected)
-	v.Not().EqualTo(expected)
+	v.Not().Eq(23)
+	v.Not().Equal(23)
+	v.Not().Equals(23)
+	v.Not().EqualTo(23)
 }
 
 func TestNegationEqualsArray(test *testing.T) {
