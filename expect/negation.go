@@ -84,8 +84,8 @@ func (not *Negation) HaveLength(given int) {
 
 // Equals asserts inequality to a given value
 func (not *Negation) Equals(given interface{}) {
-	if not.Actual == given {
-		not.Fail()
+	if equal(not.Actual, given) {
+		not.Errorf("%s: %#v == %#v", not.Name(), not.Actual, given)
 	}
 }
 

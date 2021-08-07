@@ -1,9 +1,10 @@
 package expect_test
 
 import (
+	"testing"
+
 	"preflight"
 	"preflight/expect"
-	"testing"
 )
 
 func TestValue(test *testing.T) {
