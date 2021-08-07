@@ -23,10 +23,13 @@ func TestValueIsNot(test *testing.T) {
 	v := expect.Value(t.T, 1)
 
 	if _, ok := v.Not().(*expect.Negation); !ok {
-		t.Error("Not does not return a negation")
+		t.Error("Not() does not return a negation")
 	}
 	if _, ok := v.IsNot().(*expect.Negation); !ok {
-		t.Error("IsNot does not return a negation")
+		t.Error("IsNot() does not return a negation")
+	}
+	if _, ok := v.DoesNot().(*expect.Negation); !ok {
+		t.Error("DoesNot() does not return a negation")
 	}
 }
 

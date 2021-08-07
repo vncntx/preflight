@@ -13,6 +13,7 @@ type Expectation interface {
 
 	Not() Expectation
 	IsNot() Expectation
+	DoesNot() Expectation
 
 	// Assertions
 

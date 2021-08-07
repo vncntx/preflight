@@ -45,6 +45,11 @@ func (not *Negation) IsNot() Expectation {
 	return not.Not()
 }
 
+// DoesNot is equivalent to Not()
+func (not *Negation) DoesNot() Expectation {
+	return not.Not()
+}
+
 // Nil asserts the value is not nil
 func (not *Negation) Nil() {
 	not.Equals(nil)

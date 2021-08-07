@@ -46,6 +46,11 @@ func (f *Fault) IsNot() Expectation {
 	return f
 }
 
+// DoesNot returns the current expectation
+func (f *Fault) DoesNot() Expectation {
+	return f
+}
+
 // Nil always results in an error
 func (f *Fault) Nil() {
 	f.Error(f.err)

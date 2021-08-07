@@ -56,6 +56,11 @@ func (e *ExpectedValue) IsNot() Expectation {
 	return e.Not()
 }
 
+// DoesNot is equivalent to Not()
+func (e *ExpectedValue) DoesNot() Expectation {
+	return e.Not()
+}
+
 // Nil asserts the value is nil
 func (e *ExpectedValue) Nil() {
 	e.Equals(nil)
