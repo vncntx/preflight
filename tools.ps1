@@ -7,7 +7,6 @@
 . (Join-Path 'tools' 'go' 'format.ps1')
 . (Join-Path 'tools' 'go' 'check.ps1')
 . (Join-Path 'tools' 'go' 'test.ps1')
-. (Join-Path 'tools' 'go' 'run.ps1')
 . (Join-Path 'tools' 'go' 'publish.ps1')
 
 function Invoke-Tools {
@@ -65,14 +64,6 @@ function Invoke-Tools {
             'run all tests with coverage',
             {
                 Invoke-GoTests
-            }
-        ),
-        [Tool]::new(
-            'run',
-            "run `e[3m[args]`e[3m",
-            'compile and run',
-            {
-                Invoke-GoRun $Arguments
             }
         ),
         [Tool]::new(

@@ -172,7 +172,9 @@ function Invoke-GoTests {
         catch {
             $code_error_pattern = '^(?<file>.+):(?<loc>[0-9]+:[0-9]+): (?<txt>.*)$'
             if ($log -match $code_error_pattern) {
-                $e.Add($log, $code_error_pattern)
+                $parsed = Select-String -Pattern $code_error_pattern -InputObject $log
+                $path, $loc, $txt = $parsed.Matches.Groups[1..3].Value
+                $e.Add($path, $loc, $txt)
             }
         }
 
@@ -200,12 +202,22 @@ function Invoke-GoTests {
                 }
             }
         } elseif ($package) {
-            $coverage_pattern = "coverage: (?<coverage>[0-9\.]+)% of statements"
-            if ($log -match $coverage_pattern) {
-                $parsed = Select-String -Pattern $coverage_pattern -InputObject $log
-                $coverage = $parsed.Matches[0].Groups[1]
+            $coverage_pattern = 'coverage: (?<coverage>[0-9\.]+)% of statements'
+            $no_tests_pattern = '\[no test files\]'
 
-                $t.AddCoverage($package, [Double]::Parse($coverage))
+            switch -Regex ($log) {
+                $coverage_pattern {
+                    $parsed = Select-String -Pattern $coverage_pattern -InputObject $log
+                    $coverage = $parsed.Matches[0].Groups[1]
+    
+                    $t.AddCoverage($package, [Double]::Parse($coverage))
+                }
+                $no_tests_pattern {
+                    $t.AddCoverage($package, 0)
+                }
+                default {
+                    # ignore
+                }
             }
         }
     }
