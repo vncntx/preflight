@@ -123,7 +123,7 @@ func (e *ExpectedValue) Matches(pattern string) {
 	if err != nil {
 		e.Error(err)
 	} else if !match {
-		e.Errorf("'%#v' does not match /%s/", e.Actual, pattern)
+		e.Errorf("%s: '%#v' does not match /%s/", e.Name(), e.Actual, pattern)
 	}
 }
 

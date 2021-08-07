@@ -73,7 +73,7 @@ func (not *Negation) Empty() {
 // HasLength asserts the value is an array with length != given
 func (not *Negation) HasLength(given int) {
 	if reflect.ValueOf(not.Actual).Len() == given {
-		not.Fail()
+		not.Errorf("%s: len(%#v) == %d", not.Name(), not.Actual, given)
 	}
 }
 
@@ -112,7 +112,7 @@ func (not *Negation) Matches(pattern string) {
 	if err != nil {
 		not.Error(err)
 	} else if match {
-		not.Errorf("'%v' matches /%s/", not.Actual, pattern)
+		not.Errorf("%s: '%v' matches /%s/", not.Name(), not.Actual, pattern)
 	}
 }
 
