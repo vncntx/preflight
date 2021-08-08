@@ -38,7 +38,6 @@ func FromWritten(t *testing.T, consumer Consumer) Stream {
 		r:   r,
 		buf: make([]byte, 0, bufferSize),
 	}
-
 }
 
 // Close and the stream
