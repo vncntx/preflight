@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"preflight/expect"
+	"vincent.click/pkg/preflight/expect"
 )
 
 // Writable is a set of expectations about a writable stream
@@ -20,7 +20,7 @@ type Writable struct {
 
 // FromWritten returns a new Writable
 func FromWritten(t *testing.T, consumer Consumer) Stream {
-	w, err := os.CreateTemp(os.TempDir(), "preflight-")
+	w, err := os.CreateTemp(os.TempDir(), "vincent.click/pkg/preflight-")
 	if err != nil {
 		return Faulty(t, err)
 	}

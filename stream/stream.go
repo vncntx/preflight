@@ -1,7 +1,7 @@
 package stream
 
 import (
-	"preflight/expect"
+	"vincent.click/pkg/preflight/expect"
 )
 
 // Stream is a set of expectations about a data stream

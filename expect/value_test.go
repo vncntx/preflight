@@ -3,8 +3,8 @@ package expect_test
 import (
 	"testing"
 
-	"preflight"
-	"preflight/expect"
+	"vincent.click/pkg/preflight"
+	"vincent.click/pkg/preflight/expect"
 )
 
 func TestValue(test *testing.T) {

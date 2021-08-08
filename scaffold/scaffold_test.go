@@ -3,8 +3,8 @@ package scaffold_test
 import (
 	"testing"
 
-	"preflight"
-	"preflight/scaffold"
+	"vincent.click/pkg/preflight"
+	"vincent.click/pkg/preflight/scaffold"
 )
 
 func TestCaptureExitCode(test *testing.T) {

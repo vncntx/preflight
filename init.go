@@ -1,6 +1,6 @@
 package preflight
 
-import "preflight/scaffold"
+import "vincent.click/pkg/preflight/scaffold"
 
 var (
 	Scaffold = scaffold.New()

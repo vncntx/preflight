@@ -3,8 +3,8 @@ package kind_test
 import (
 	"testing"
 
-	"preflight"
-	"preflight/expect/kind"
+	"vincent.click/pkg/preflight"
+	"vincent.click/pkg/preflight/expect/kind"
 )
 
 func TestOf(test *testing.T) {

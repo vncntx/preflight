@@ -3,7 +3,7 @@ package expect
 import (
 	"reflect"
 
-	"preflight/expect/kind"
+	"vincent.click/pkg/preflight/expect/kind"
 )
 
 func equal(a, b interface{}) bool {

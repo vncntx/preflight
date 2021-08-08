@@ -3,7 +3,7 @@ package stream
 import (
 	"testing"
 
-	"preflight/expect"
+	"vincent.click/pkg/preflight/expect"
 )
 
 // Fault is a set of stream expectations that always result in an error

@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"preflight/expect"
-	"preflight/scaffold"
-	"preflight/stream"
+	"vincent.click/pkg/preflight/expect"
+	"vincent.click/pkg/preflight/scaffold"
+	"vincent.click/pkg/preflight/stream"
 )
 
 // Test provides utilities for testing

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"preflight"
-	"preflight/errs"
+	"vincent.click/pkg/preflight"
+	"vincent.click/pkg/preflight/errs"
 )
 
 func TestCombine(test *testing.T) {

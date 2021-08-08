@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"preflight/expect"
+	"vincent.click/pkg/preflight/expect"
 )
 
 // File is a set of expectations about a file stream
