@@ -20,7 +20,7 @@ type Writable struct {
 
 // FromWritten returns a new Writable
 func FromWritten(t *testing.T, consumer Consumer) Stream {
-	w, err := os.CreateTemp(os.TempDir(), "vincent.click/pkg/preflight-")
+	w, err := os.CreateTemp(os.TempDir(), "preflight-")
 	if err != nil {
 		return Faulty(t, err)
 	}

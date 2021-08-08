@@ -2,6 +2,7 @@ package stream
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"io/fs"
 	"net/http"
@@ -73,11 +74,13 @@ func (f *File) Bytes() expect.Expectation {
 func (f *File) ContentType() expect.Expectation {
 	if f.pos < 1 {
 		err := f.read(true)
-		if err != nil {
+		if err != nil && !errors.Is(err, io.EOF) {
 			return expect.Faulty(f.T, err)
 		}
 	}
 	var contentType = http.DetectContentType(f.buf)
+
+	fmt.Println(contentType)
 
 	return expect.Value(f.T, contentType)
 }
