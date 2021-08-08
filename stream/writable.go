@@ -10,16 +10,16 @@ import (
 	"preflight/expect"
 )
 
-// Sink is a set of expectations about a writable stream
-type Sink struct {
+// Writable is a set of expectations about a writable stream
+type Writable struct {
 	*testing.T
 
 	r   *os.File
 	buf []byte
 }
 
-// FromWritable returns a new Sink
-func FromWritable(t *testing.T, consumer Consumer) Stream {
+// FromWritten returns a new Writable
+func FromWritten(t *testing.T, consumer Consumer) Stream {
 	w, err := os.CreateTemp(os.TempDir(), "preflight-")
 	if err != nil {
 		return Faulty(t, err)
@@ -33,7 +33,7 @@ func FromWritable(t *testing.T, consumer Consumer) Stream {
 		return Faulty(t, err)
 	}
 
-	return &Sink{
+	return &Writable{
 		T:   t,
 		r:   r,
 		buf: make([]byte, 0, bufferSize),
@@ -42,7 +42,7 @@ func FromWritable(t *testing.T, consumer Consumer) Stream {
 }
 
 // Close and the stream
-func (s *Sink) Close() error {
+func (s *Writable) Close() error {
 	if err := s.r.Close(); err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func (s *Sink) Close() error {
 }
 
 // Size returns an Expectation about the number of bytes written
-func (s *Sink) Size() expect.Expectation {
+func (s *Writable) Size() expect.Expectation {
 	info, err := s.r.Stat()
 	if err != nil {
 		return expect.Faulty(s.T, err)
@@ -60,8 +60,8 @@ func (s *Sink) Size() expect.Expectation {
 	return expect.Value(s.T, info.Size())
 }
 
-// Text returns an Expectation about all text written to the sink
-func (s *Sink) Text() expect.Expectation {
+// Text returns an Expectation about all text written to the stream
+func (s *Writable) Text() expect.Expectation {
 	if err := s.readAll(); err != nil {
 		return expect.Faulty(s.T, err)
 	}
@@ -69,8 +69,8 @@ func (s *Sink) Text() expect.Expectation {
 	return expect.Value(s.T, string(s.buf))
 }
 
-// Bytes returns an Expectation about all bytes written to the sink
-func (s *Sink) Bytes() expect.Expectation {
+// Bytes returns an Expectation about all bytes written to the stream
+func (s *Writable) Bytes() expect.Expectation {
 	if err := s.readAll(); err != nil {
 		return expect.Faulty(s.T, err)
 	}
@@ -78,8 +78,8 @@ func (s *Sink) Bytes() expect.Expectation {
 	return expect.Value(s.T, s.buf)
 }
 
-// ContentType returns an Expectation about content type written to the sink
-func (s *Sink) ContentType() expect.Expectation {
+// ContentType returns an Expectation about content type written to the stream
+func (s *Writable) ContentType() expect.Expectation {
 	if len(s.buf) < 1 {
 		err := s.read(true)
 		if err != nil {
@@ -91,7 +91,7 @@ func (s *Sink) ContentType() expect.Expectation {
 	return expect.Value(s.T, contentType)
 }
 
-func (s *Sink) read(overwrite bool) error {
+func (s *Writable) read(overwrite bool) error {
 	start := 0
 
 	if !overwrite {
@@ -109,7 +109,7 @@ func (s *Sink) read(overwrite bool) error {
 	return err
 }
 
-func (s *Sink) readAll() error {
+func (s *Writable) readAll() error {
 	for {
 		err := s.read(false)
 		if errors.Is(io.EOF, err) {

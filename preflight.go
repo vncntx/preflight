@@ -26,7 +26,7 @@ func (t *Test) ExpectFile(f *os.File) stream.Stream {
 
 // ExpectWritten returns a set of expectations about data written to a stream
 func (t *Test) ExpectWritten(consumer stream.Consumer) stream.Stream {
-	return stream.FromWritable(t.T, consumer)
+	return stream.FromWritten(t.T, consumer)
 }
 
 // ExpectExitCode returns an expectation about a captured exit code
