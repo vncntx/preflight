@@ -16,7 +16,6 @@ func TestWritableClose(test *testing.T) {
 		defer w.Close()
 
 		name = w.Name()
-		w.WriteString(content)
 	})
 
 	t.Expect(w.Close()).Is().Nil()
@@ -29,11 +28,7 @@ func TestWritableClose(test *testing.T) {
 func TestWritableSize(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, func(w *os.File) {
-		defer w.Close()
-
-		w.WriteString(content)
-	})
+	w := stream.FromWritten(t.T, writeContent)
 
 	w.Size().Eq(len(content))
 }
@@ -41,11 +36,7 @@ func TestWritableSize(test *testing.T) {
 func TestWritableText(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, func(w *os.File) {
-		defer w.Close()
-
-		w.WriteString(content)
-	})
+	w := stream.FromWritten(t.T, writeContent)
 
 	w.Text().Eq(content)
 }
@@ -53,11 +44,7 @@ func TestWritableText(test *testing.T) {
 func TestWritableBytes(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, func(w *os.File) {
-		defer w.Close()
-
-		w.WriteString(content)
-	})
+	w := stream.FromWritten(t.T, writeContent)
 
 	bytes := []byte(content)
 	w.Bytes().Eq(bytes)
@@ -66,11 +53,15 @@ func TestWritableBytes(test *testing.T) {
 func TestWritableContentType(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, func(w *os.File) {
-		defer w.Close()
-
-		w.WriteString(content)
-	})
+	w := stream.FromWritten(t.T, writeContent)
 
 	w.ContentType().Matches("text/plain")
+}
+
+func writeContent(w *os.File) {
+	defer w.Close()
+
+	if _, err := w.WriteString(content); err != nil {
+		panic(err)
+	}
 }

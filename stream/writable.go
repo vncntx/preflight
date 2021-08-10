@@ -1,8 +1,7 @@
 package stream
 
 import (
-	"errors"
-	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"testing"
@@ -15,7 +14,7 @@ type Writable struct {
 	*testing.T
 
 	r   *os.File
-	buf []byte
+	mod fs.FileMode
 }
 
 // FromWritten returns a new Writable
@@ -33,90 +32,69 @@ func FromWritten(t *testing.T, consumer Consumer) Stream {
 		return Faulty(t, err)
 	}
 
+	info, err := r.Stat()
+	if err != nil {
+		return Faulty(t, err)
+	}
+
 	return &Writable{
 		T:   t,
 		r:   r,
-		buf: make([]byte, 0, bufferSize),
+		mod: info.Mode(),
 	}
 }
 
-// Close and the stream
-func (s *Writable) Close() error {
-	if err := s.r.Close(); err != nil {
+// Close the stream and remove the temporary file
+func (w *Writable) Close() error {
+	if err := w.r.Close(); err != nil {
 		return err
 	}
 
-	return os.Remove(s.r.Name())
+	return os.Remove(w.r.Name())
 }
 
 // Size returns an Expectation about the number of bytes written
-func (s *Writable) Size() expect.Expectation {
-	info, err := s.r.Stat()
+func (w *Writable) Size() expect.Expectation {
+	stat, err := w.r.Stat()
 	if err != nil {
-		return expect.Faulty(s.T, err)
+		return expect.Faulty(w.T, err)
 	}
 
-	return expect.Value(s.T, info.Size())
+	return expect.Value(w.T, stat.Size())
 }
 
 // Text returns an Expectation about all text written to the stream
-func (s *Writable) Text() expect.Expectation {
-	if err := s.readAll(); err != nil {
-		return expect.Faulty(s.T, err)
+func (w *Writable) Text() expect.Expectation {
+	txt, err := readAll(w.r, w.mod)
+	if err != nil {
+		return expect.Faulty(w.T, err)
 	}
 
-	return expect.Value(s.T, string(s.buf))
+	return expect.Value(w.T, string(txt))
 }
 
 // Bytes returns an Expectation about all bytes written to the stream
-func (s *Writable) Bytes() expect.Expectation {
-	if err := s.readAll(); err != nil {
-		return expect.Faulty(s.T, err)
+func (w *Writable) Bytes() expect.Expectation {
+	bytes, err := readAll(w.r, w.mod)
+	if err != nil {
+		return expect.Faulty(w.T, err)
 	}
 
-	return expect.Value(s.T, s.buf)
+	return expect.Value(w.T, bytes)
 }
 
 // ContentType returns an Expectation about content type written to the stream
-func (s *Writable) ContentType() expect.Expectation {
-	if len(s.buf) < 1 {
-		err := s.read(true)
-		if err != nil {
-			return expect.Faulty(s.T, err)
-		}
-	}
-	var contentType = http.DetectContentType(s.buf)
-
-	return expect.Value(s.T, contentType)
-}
-
-func (s *Writable) read(overwrite bool) error {
-	start := 0
-
-	if !overwrite {
-		// next read will append to end of buffer
-		start = len(s.buf)
-		// add more capacity as needed
-		if len(s.buf) == cap(s.buf) {
-			s.buf = append(s.buf, 0)[:len(s.buf)]
-		}
+func (w *Writable) ContentType() expect.Expectation {
+	if err := seek(w.r, w.mod, 0); err != nil {
+		return expect.Faulty(w.T, err)
 	}
 
-	n, err := s.r.Read(s.buf[start:cap(s.buf)])
-	s.buf = s.buf[:start+n]
-
-	return err
-}
-
-func (s *Writable) readAll() error {
-	for {
-		err := s.read(false)
-		if errors.Is(io.EOF, err) {
-			break
-		} else if err != nil {
-			return err
-		}
+	content, err := read(w.r, 512)
+	if err != nil {
+		return expect.Faulty(w.T, err)
 	}
 
-	return nil
+	contentType := http.DetectContentType(content)
+
+	return expect.Value(w.T, contentType)
 }
