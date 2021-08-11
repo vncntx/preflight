@@ -18,15 +18,26 @@ func seek(f *os.File, mod fs.FileMode, pos int64) error {
 	return err
 }
 
-func read(f *os.File, n int) ([]byte, error) {
-	buf := make([]byte, n)
+func read(f *os.File, max int) ([]byte, error) {
+	buf := make([]byte, max)
 
-	_, err := f.Read(buf)
+	size, err := f.Read(buf)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return nil, err
 	}
 
-	return buf, nil
+	return buf[:size], nil
+}
+
+func readAt(f *os.File, pos int64, max int) ([]byte, error) {
+	buf := make([]byte, max)
+
+	size, err := f.ReadAt(buf, pos)
+	if err != nil && !errors.Is(err, io.EOF) {
+		return nil, err
+	}
+
+	return buf[:size], nil
 }
 
 func readAll(f *os.File, mod fs.FileMode) ([]byte, error) {
