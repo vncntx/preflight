@@ -7,17 +7,6 @@ import (
 	"os"
 )
 
-func seek(f *os.File, mod fs.FileMode, pos int64) error {
-	// cannot seek in append mode or named pipes
-	if isAppend(mod) || isPipe(mod) {
-		return nil
-	}
-
-	_, err := f.Seek(pos, io.SeekStart)
-
-	return err
-}
-
 func read(f *os.File, max int) ([]byte, error) {
 	buf := make([]byte, max)
 
@@ -42,11 +31,6 @@ func readAt(f *os.File, pos int64, max int) ([]byte, error) {
 
 func readAll(f *os.File, mod fs.FileMode) ([]byte, error) {
 	buf := make([]byte, 0, bufferSize)
-
-	err := seek(f, mod, 0)
-	if err != nil {
-		return nil, err
-	}
 
 	for {
 		// next read will append to end of buffer

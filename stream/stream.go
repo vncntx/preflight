@@ -9,6 +9,7 @@ type Stream interface {
 	Text() expect.Expectation
 	TextAt(pos int64, length int) expect.Expectation
 	Bytes() expect.Expectation
+	NextBytes(length int) expect.Expectation
 	BytesAt(pos int64, length int) expect.Expectation
 	ContentType() expect.Expectation
 }

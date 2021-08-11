@@ -43,6 +43,11 @@ func (f *Fault) Bytes() expect.Expectation {
 	return f.toExpectation()
 }
 
+// NextBytes returns a faulty Expectation
+func (f *Fault) NextBytes(length int) expect.Expectation {
+	return f.toExpectation()
+}
+
 // BytesAt returns a faulty Expectation
 func (f *Fault) BytesAt(pos int64, length int) expect.Expectation {
 	return f.toExpectation()

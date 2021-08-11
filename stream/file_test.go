@@ -1,6 +1,7 @@
 package stream_test
 
 import (
+	"io"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -16,6 +17,7 @@ func TestFileClose(test *testing.T) {
 
 	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
+	defer cleanup(temp)
 
 	t.Expect(file.Close()).Is().Nil()
 }
@@ -25,7 +27,7 @@ func TestFileSize(test *testing.T) {
 
 	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
-	defer file.Close()
+	defer cleanup(temp)
 
 	size := len(content)
 	file.Size().Eq(size)
@@ -36,7 +38,7 @@ func TestFileText(test *testing.T) {
 
 	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
-	defer file.Close()
+	defer cleanup(temp)
 
 	file.Text().Eq(content)
 }
@@ -46,7 +48,7 @@ func TestFileTextAt(test *testing.T) {
 
 	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
-	defer file.Close()
+	defer cleanup(temp)
 
 	file.TextAt(3, 5).Eq("astra")
 }
@@ -56,10 +58,21 @@ func TestFileBytes(test *testing.T) {
 
 	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
-	defer file.Close()
+	defer cleanup(temp)
 
 	bytes := []byte(content)
 	file.Bytes().Eq(bytes)
+}
+
+func TestFileNextBytes(test *testing.T) {
+	t := preflight.Unit(test)
+
+	temp := createTemp(t, content)
+	file := stream.FromFile(t.T, temp)
+	defer cleanup(temp)
+
+	file.NextBytes(3).Eq([]byte("Ad "))
+	file.NextBytes(5).Eq([]byte("astra"))
 }
 
 func TestFileBytesAt(test *testing.T) {
@@ -67,7 +80,7 @@ func TestFileBytesAt(test *testing.T) {
 
 	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
-	defer file.Close()
+	defer cleanup(temp)
 
 	bytes := []byte("astra")
 	file.BytesAt(3, 5).Eq(bytes)
@@ -78,7 +91,7 @@ func TestFileContentType(test *testing.T) {
 
 	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
-	defer file.Close()
+	defer cleanup(temp)
 
 	file.ContentType().Matches("text/plain")
 }
@@ -89,6 +102,10 @@ func createTemp(t *preflight.Test, content string) *os.File {
 		t.Error(err)
 	}
 	if _, err := file.WriteString(content); err != nil {
+		t.Error(err)
+	}
+	// go back to the beginning to prepare for reads
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
 		t.Error(err)
 	}
 
@@ -103,4 +120,12 @@ func inflate(content string) string {
 	}
 
 	return result
+}
+
+func cleanup(f *os.File) {
+	_ = f.Close()
+
+	if err := os.Remove(f.Name()); err != nil {
+		panic(err)
+	}
 }
