@@ -73,6 +73,20 @@ func (w *Writable) Text() expect.Expectation {
 	return expect.Value(w.T, string(txt))
 }
 
+// TextAt returns an Expectation about the text written at a specific position
+func (w *Writable) TextAt(pos int64, length int) expect.Expectation {
+	if err := seek(w.r, w.mod, pos); err != nil {
+		return expect.Faulty(w.T, err)
+	}
+
+	bytes, err := read(w.r, length)
+	if err != nil {
+		return expect.Faulty(w.T, err)
+	}
+
+	return expect.Value(w.T, string(bytes))
+}
+
 // Bytes returns an Expectation about all bytes written to the stream
 func (w *Writable) Bytes() expect.Expectation {
 	bytes, err := readAll(w.r, w.mod)

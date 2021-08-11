@@ -41,6 +41,14 @@ func TestWritableText(test *testing.T) {
 	w.Text().Eq(content)
 }
 
+func TestWritableTextAt(test *testing.T) {
+	t := preflight.Unit(test)
+
+	w := stream.FromWritten(t.T, writeContent)
+
+	w.TextAt(3, 5).Eq("astra")
+}
+
 func TestWritableBytes(test *testing.T) {
 	t := preflight.Unit(test)
 

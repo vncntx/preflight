@@ -33,6 +33,11 @@ func (f *Fault) Text() expect.Expectation {
 	return f.toExpectation()
 }
 
+// TextAt returns a faulty Expectation
+func (f *Fault) TextAt(pos int64, length int) expect.Expectation {
+	return f.toExpectation()
+}
+
 // Bytes returns a faulty Expectation
 func (f *Fault) Bytes() expect.Expectation {
 	return f.toExpectation()

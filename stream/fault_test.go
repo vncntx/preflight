@@ -25,8 +25,9 @@ func TestFaultyExpectations(test *testing.T) {
 
 	t.Expect(isFaulty(f.Size())).Is().True()
 	t.Expect(isFaulty(f.Text())).Is().True()
+	t.Expect(isFaulty(f.TextAt(3, 5))).Is().True()
 	t.Expect(isFaulty(f.Bytes())).Is().True()
-	t.Expect(isFaulty(f.BytesAt(10, 5))).Is().True()
+	t.Expect(isFaulty(f.BytesAt(3, 5))).Is().True()
 	t.Expect(isFaulty(f.ContentType())).Is().True()
 }
 

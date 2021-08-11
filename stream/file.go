@@ -56,6 +56,20 @@ func (f *File) Text() expect.Expectation {
 	return expect.Value(f.T, string(txt))
 }
 
+// TextAt returns an Expectation about the text contents at a specific position
+func (f *File) TextAt(pos int64, length int) expect.Expectation {
+	if err := seek(f.d, f.mod, pos); err != nil {
+		return expect.Faulty(f.T, err)
+	}
+
+	bytes, err := read(f.d, length)
+	if err != nil {
+		return expect.Faulty(f.T, err)
+	}
+
+	return expect.Value(f.T, string(bytes))
+}
+
 // Bytes returns an Expectation about the entire file contents
 func (f *File) Bytes() expect.Expectation {
 	bytes, err := readAll(f.d, f.mod)
@@ -76,8 +90,6 @@ func (f *File) BytesAt(pos int64, length int) expect.Expectation {
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
-
-	f.Logf("bytes: %#v\n", bytes)
 
 	return expect.Value(f.T, bytes)
 }
