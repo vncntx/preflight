@@ -62,6 +62,16 @@ func TestWritableBytes(test *testing.T) {
 	w.Bytes().Eq(bytes)
 }
 
+func TestWritableNextBytes(test *testing.T) {
+	t := preflight.Unit(test)
+
+	w := stream.FromWritten(t.T, writeContent)
+	defer w.Close()
+
+	w.NextBytes(3).Eq([]byte("Ad "))
+	w.NextBytes(5).Eq([]byte("astra"))
+}
+
 func TestWritableBytesAt(test *testing.T) {
 	t := preflight.Unit(test)
 
