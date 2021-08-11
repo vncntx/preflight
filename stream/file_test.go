@@ -43,6 +43,17 @@ func TestFileText(test *testing.T) {
 	file.Text().Eq(content)
 }
 
+func TestFileNextText(test *testing.T) {
+	t := preflight.Unit(test)
+
+	temp := createTemp(t, content)
+	file := stream.FromFile(t.T, temp)
+	defer cleanup(temp)
+
+	file.NextText(3).Eq("Ad ")
+	file.NextText(5).Eq("astra")
+}
+
 func TestFileTextAt(test *testing.T) {
 	t := preflight.Unit(test)
 

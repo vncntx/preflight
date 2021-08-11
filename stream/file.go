@@ -56,6 +56,16 @@ func (f *File) Text() expect.Expectation {
 	return expect.Value(f.T, string(txt))
 }
 
+// NextText returns an Expectation about the next chunk of text
+func (f *File) NextText(length int) expect.Expectation {
+	bytes, err := read(f.d, length)
+	if err != nil {
+		return expect.Faulty(f.T, err)
+	}
+
+	return expect.Value(f.T, string(bytes))
+}
+
 // TextAt returns an Expectation about the text contents at a specific position
 func (f *File) TextAt(pos int64, length int) expect.Expectation {
 	bytes, err := readAt(f.d, pos, length)

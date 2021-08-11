@@ -7,6 +7,7 @@ type Stream interface {
 	Close() error
 	Size() expect.Expectation
 	Text() expect.Expectation
+	NextText(length int) expect.Expectation
 	TextAt(pos int64, length int) expect.Expectation
 	Bytes() expect.Expectation
 	NextBytes(length int) expect.Expectation

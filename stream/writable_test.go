@@ -43,6 +43,16 @@ func TestWritableText(test *testing.T) {
 	w.Text().Eq(content)
 }
 
+func TestWritableNextText(test *testing.T) {
+	t := preflight.Unit(test)
+
+	w := stream.FromWritten(t.T, writeContent)
+	defer w.Close()
+
+	w.NextText(3).Eq("Ad ")
+	w.NextText(5).Eq("astra")
+}
+
 func TestWritableTextAt(test *testing.T) {
 	t := preflight.Unit(test)
 

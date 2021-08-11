@@ -73,6 +73,16 @@ func (w *Writable) Text() expect.Expectation {
 	return expect.Value(w.T, string(txt))
 }
 
+// NextText returns an Expectation about the next chunk of text written to the stream
+func (w *Writable) NextText(length int) expect.Expectation {
+	bytes, err := read(w.r, length)
+	if err != nil {
+		return expect.Faulty(w.T, err)
+	}
+
+	return expect.Value(w.T, string(bytes))
+}
+
 // TextAt returns an Expectation about the text written at a specific position
 func (w *Writable) TextAt(pos int64, length int) expect.Expectation {
 	bytes, err := readAt(w.r, pos, length)
