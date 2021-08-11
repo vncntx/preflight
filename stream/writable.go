@@ -83,6 +83,20 @@ func (w *Writable) Bytes() expect.Expectation {
 	return expect.Value(w.T, bytes)
 }
 
+// BytesAt returns an Expectation about the bytes written at a specific position
+func (w *Writable) BytesAt(pos int64, length int) expect.Expectation {
+	if err := seek(w.r, w.mod, pos); err != nil {
+		return expect.Faulty(w.T, err)
+	}
+
+	bytes, err := read(w.r, length)
+	if err != nil {
+		return expect.Faulty(w.T, err)
+	}
+
+	return expect.Value(w.T, bytes)
+}
+
 // ContentType returns an Expectation about content type written to the stream
 func (w *Writable) ContentType() expect.Expectation {
 	if err := seek(w.r, w.mod, 0); err != nil {

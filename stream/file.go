@@ -66,6 +66,22 @@ func (f *File) Bytes() expect.Expectation {
 	return expect.Value(f.T, bytes)
 }
 
+// BytesAt returns an Expectation about the file contents at a specific position
+func (f *File) BytesAt(pos int64, length int) expect.Expectation {
+	if err := seek(f.d, f.mod, pos); err != nil {
+		return expect.Faulty(f.T, err)
+	}
+
+	bytes, err := read(f.d, length)
+	if err != nil {
+		return expect.Faulty(f.T, err)
+	}
+
+	f.Logf("bytes: %#v\n", bytes)
+
+	return expect.Value(f.T, bytes)
+}
+
 // ContentType returns an Expectation about the content type
 func (f *File) ContentType() expect.Expectation {
 	if err := seek(f.d, f.mod, 0); err != nil {

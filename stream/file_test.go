@@ -52,6 +52,17 @@ func TestFileBytes(test *testing.T) {
 	file.Bytes().Eq(bytes)
 }
 
+func TestFileBytesAt(test *testing.T) {
+	t := preflight.Unit(test)
+
+	temp := createTemp(t, content)
+	file := stream.FromFile(t.T, temp)
+	defer file.Close()
+
+	bytes := []byte("astra")
+	file.BytesAt(3, 5).Eq(bytes)
+}
+
 func TestFileContentType(test *testing.T) {
 	t := preflight.Unit(test)
 

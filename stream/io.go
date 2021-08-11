@@ -19,7 +19,7 @@ func seek(f *os.File, mod fs.FileMode, pos int64) error {
 }
 
 func read(f *os.File, n int) ([]byte, error) {
-	buf := make([]byte, 0, n)
+	buf := make([]byte, n)
 
 	_, err := f.Read(buf)
 	if err != nil && !errors.Is(err, io.EOF) {

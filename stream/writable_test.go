@@ -50,6 +50,15 @@ func TestWritableBytes(test *testing.T) {
 	w.Bytes().Eq(bytes)
 }
 
+func TestWritableBytesAt(test *testing.T) {
+	t := preflight.Unit(test)
+
+	w := stream.FromWritten(t.T, writeContent)
+
+	bytes := []byte("astra")
+	w.BytesAt(3, 5).Eq(bytes)
+}
+
 func TestWritableContentType(test *testing.T) {
 	t := preflight.Unit(test)
 
