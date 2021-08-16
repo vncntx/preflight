@@ -4,19 +4,27 @@ import "strings"
 
 // CombinedError wraps multiple errors
 type CombinedError struct {
-	errors []error
+	e string
 }
 
 // Combine returns a new CombinedError
 func Combine(errors ...error) error {
-	return &CombinedError{errors}
+	e := []string{}
+	for _, err := range errors {
+		if err != nil {
+			e = append(e, err.Error())
+		}
+	}
+
+	if len(e) < 1 {
+		return nil
+	}
+
+	return &CombinedError{
+		e: strings.Join(e, "; "),
+	}
 }
 
 func (c *CombinedError) Error() string {
-	e := []string{}
-	for _, err := range c.errors {
-		e = append(e, err.Error())
-	}
-
-	return strings.Join(e, "; ")
+	return c.e
 }
