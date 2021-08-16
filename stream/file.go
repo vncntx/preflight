@@ -57,23 +57,23 @@ func (f *File) Text() expect.Expectation {
 }
 
 // NextText returns an Expectation about the next chunk of text
-func (f *File) NextText(length int) expect.Expectation {
-	bytes, err := read(f.d, length)
+func (f *File) NextText(bytes int) expect.Expectation {
+	data, err := read(f.d, bytes)
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
 
-	return expect.Value(f.T, string(bytes))
+	return expect.Value(f.T, string(data))
 }
 
 // TextAt returns an Expectation about the text contents at a specific position
-func (f *File) TextAt(pos int64, length int) expect.Expectation {
-	bytes, err := readAt(f.d, pos, length)
+func (f *File) TextAt(pos int64, bytes int) expect.Expectation {
+	data, err := readAt(f.d, pos, bytes)
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
 
-	return expect.Value(f.T, string(bytes))
+	return expect.Value(f.T, string(data))
 }
 
 // Bytes returns an Expectation about the entire file contents
@@ -87,23 +87,23 @@ func (f *File) Bytes() expect.Expectation {
 }
 
 // NextBytes returns an Expectation about the next chunk of bytes
-func (f *File) NextBytes(length int) expect.Expectation {
-	bytes, err := read(f.d, length)
+func (f *File) NextBytes(bytes int) expect.Expectation {
+	data, err := read(f.d, bytes)
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
 
-	return expect.Value(f.T, bytes)
+	return expect.Value(f.T, data)
 }
 
 // BytesAt returns an Expectation about the file contents at a specific position
-func (f *File) BytesAt(pos int64, length int) expect.Expectation {
-	bytes, err := readAt(f.d, pos, length)
+func (f *File) BytesAt(pos int64, bytes int) expect.Expectation {
+	data, err := readAt(f.d, pos, bytes)
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
 
-	return expect.Value(f.T, bytes)
+	return expect.Value(f.T, data)
 }
 
 // ContentType returns an Expectation about the content type

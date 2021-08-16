@@ -34,12 +34,12 @@ func (f *Fault) Text() expect.Expectation {
 }
 
 // NextText returns a faulty Expectation
-func (f *Fault) NextText(length int) expect.Expectation {
+func (f *Fault) NextText(bytes int) expect.Expectation {
 	return f.toExpectation()
 }
 
 // TextAt returns a faulty Expectation
-func (f *Fault) TextAt(pos int64, length int) expect.Expectation {
+func (f *Fault) TextAt(pos int64, bytes int) expect.Expectation {
 	return f.toExpectation()
 }
 
@@ -49,12 +49,12 @@ func (f *Fault) Bytes() expect.Expectation {
 }
 
 // NextBytes returns a faulty Expectation
-func (f *Fault) NextBytes(length int) expect.Expectation {
+func (f *Fault) NextBytes(bytes int) expect.Expectation {
 	return f.toExpectation()
 }
 
 // BytesAt returns a faulty Expectation
-func (f *Fault) BytesAt(pos int64, length int) expect.Expectation {
+func (f *Fault) BytesAt(pos int64, bytes int) expect.Expectation {
 	return f.toExpectation()
 }
 
