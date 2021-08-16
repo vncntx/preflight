@@ -11,9 +11,8 @@ func equal(a, b interface{}) bool {
 	y := reflect.ValueOf(b)
 
 	aK := kind.Of(a)
-	bK := kind.Of(b)
 
-	if aK != bK {
+	if aK != kind.Of(b) {
 		return false
 	}
 
