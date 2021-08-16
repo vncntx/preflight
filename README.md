@@ -19,6 +19,6 @@ Please read the [Contribution Guide](./CONTRIBUTING.md) before you proceed.
 
 ## Copyright
 
-Copyright 2019-2021 [Vincent Fiestada](mailto:vincent@vincent.click). This project is released under a [BSD-3-Clause License](./LICENSE).
+Copyright 2021 [Vincent Fiestada](mailto:vincent@vincent.click). This project is released under a [BSD-3-Clause License](./LICENSE).
 
 Icon made by [Freepik](http://www.freepik.com/).
