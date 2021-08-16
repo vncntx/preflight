@@ -11,8 +11,7 @@ import (
 type Negation struct {
 	*testing.T
 
-	Actual  interface{}
-	Inverse Expectation
+	inverse *ExpectedValue
 }
 
 // To returns the current Expectation
@@ -37,7 +36,7 @@ func (not *Negation) Should() Expectation {
 
 // Not negates the current Expectation
 func (not *Negation) Not() Expectation {
-	return not.Inverse
+	return not.inverse
 }
 
 // IsNot is equivalent to Not()
@@ -72,8 +71,8 @@ func (not *Negation) Empty() {
 
 // HasLength asserts the value is an array with length != given
 func (not *Negation) HasLength(given int) {
-	if reflect.ValueOf(not.Actual).Len() == given {
-		not.Errorf("%s: len(%#v) == %d", not.Name(), not.Actual, given)
+	if reflect.ValueOf(not.inverse.actual).Len() == given {
+		not.Errorf("%s: len(%#v) == %d", not.Name(), not.inverse.actual, given)
 	}
 }
 
@@ -84,8 +83,8 @@ func (not *Negation) HaveLength(given int) {
 
 // Equals asserts inequality to a given value
 func (not *Negation) Equals(given interface{}) {
-	if equal(not.Actual, given) {
-		not.Errorf("%s: %#v == %#v", not.Name(), not.Actual, given)
+	if equal(not.inverse.actual, given) {
+		not.Errorf("%s: %#v == %#v", not.Name(), not.inverse.actual, given)
 	}
 }
 
@@ -106,13 +105,13 @@ func (not *Negation) EqualTo(given interface{}) {
 
 // Matches asserts that the value does not match a given pattern
 func (not *Negation) Matches(pattern string) {
-	actual := fmt.Sprint(not.Actual) // convert to string
+	actual := fmt.Sprint(not.inverse.actual) // convert to string
 
 	match, err := regexp.MatchString(pattern, actual)
 	if err != nil {
 		not.Error(err)
 	} else if match {
-		not.Errorf("%s: '%v' matches /%s/", not.Name(), not.Actual, pattern)
+		not.Errorf("%s: '%v' matches /%s/", not.Name(), not.inverse.actual, pattern)
 	}
 }
 

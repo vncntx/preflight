@@ -11,14 +11,14 @@ import (
 type ExpectedValue struct {
 	*testing.T
 
-	Actual interface{}
+	actual interface{}
 }
 
 // Value returns a new value-based Expectation
 func Value(t *testing.T, actual interface{}) Expectation {
 	return &ExpectedValue{
 		T:      t,
-		Actual: actual,
+		actual: actual,
 	}
 }
 
@@ -46,8 +46,7 @@ func (e *ExpectedValue) Should() Expectation {
 func (e *ExpectedValue) Not() Expectation {
 	return &Negation{
 		T:       e.T,
-		Actual:  e.Actual,
-		Inverse: e,
+		inverse: e,
 	}
 }
 
@@ -83,8 +82,8 @@ func (e *ExpectedValue) Empty() {
 
 // HasLength asserts the value is an array with a given length
 func (e *ExpectedValue) HasLength(expected int) {
-	if reflect.ValueOf(e.Actual).Len() != expected {
-		e.Errorf("%s: len(%#v) != %d", e.Name(), e.Actual, expected)
+	if reflect.ValueOf(e.actual).Len() != expected {
+		e.Errorf("%s: len(%#v) != %d", e.Name(), e.actual, expected)
 	}
 }
 
@@ -95,8 +94,8 @@ func (e *ExpectedValue) HaveLength(expected int) {
 
 // Equals asserts equality to an expected value
 func (e *ExpectedValue) Equals(expected interface{}) {
-	if !equal(e.Actual, expected) {
-		e.Errorf("%s: %#v != %#v", e.Name(), e.Actual, expected)
+	if !equal(e.actual, expected) {
+		e.Errorf("%s: %#v != %#v", e.Name(), e.actual, expected)
 	}
 }
 
@@ -117,13 +116,13 @@ func (e *ExpectedValue) EqualTo(expected interface{}) {
 
 // Matches asserts that the value matches a given pattern
 func (e *ExpectedValue) Matches(pattern string) {
-	actual := fmt.Sprint(e.Actual) // convert to string
+	actual := fmt.Sprint(e.actual) // convert to string
 
 	match, err := regexp.MatchString(pattern, actual)
 	if err != nil {
 		e.Error(err)
 	} else if !match {
-		e.Errorf("%s: '%#v' does not match /%s/", e.Name(), e.Actual, pattern)
+		e.Errorf("%s: '%#v' does not match /%s/", e.Name(), e.actual, pattern)
 	}
 }
 
