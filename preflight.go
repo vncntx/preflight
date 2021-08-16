@@ -35,3 +35,10 @@ func (t *Test) ExpectExitCode(act scaffold.Action) expect.Expectation {
 
 	return expect.Value(t.T, code)
 }
+
+// ExpectPanic returns an expectation about the cause of a panicking goroutine
+func (t *Test) ExpectPanic(act scaffold.Action) expect.Expectation {
+	cause := Scaffold.CapturePanic(act)
+
+	return expect.Value(t.T, cause)
+}

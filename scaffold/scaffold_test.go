@@ -14,8 +14,21 @@ func TestCaptureExitCode(test *testing.T) {
 
 	exit := 1
 	action := func() {
-		s.OSExit(1)
+		s.OSExit(exit)
 	}
 
 	t.Expect(s.CaptureExitCode(action)).Eq(exit)
+}
+
+func TestCapturePanic(test *testing.T) {
+	t := preflight.Unit(test)
+
+	s := scaffold.New()
+
+	cause := "at the disco"
+	action := func() {
+		s.Panic(cause)
+	}
+
+	t.Expect(s.CapturePanic(action)).Eq(cause)
 }
