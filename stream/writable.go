@@ -2,7 +2,6 @@ package stream
 
 import (
 	"io/fs"
-	"net/http"
 	"os"
 	"testing"
 
@@ -125,12 +124,9 @@ func (w *Writable) BytesAt(pos int64, bytes int) expect.Expectation {
 
 // ContentType returns an Expectation about content type written to the stream
 func (w *Writable) ContentType() expect.Expectation {
-	content, err := readAt(w.r, 0, 512)
-	if err != nil {
+	if typ, err := detectContentType(w.r); err != nil {
 		return expect.Faulty(w.T, err)
+	} else {
+		return expect.Value(w.T, typ)
 	}
-
-	contentType := http.DetectContentType(content)
-
-	return expect.Value(w.T, contentType)
 }

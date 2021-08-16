@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"io/fs"
+	"net/http"
 	"os"
 )
 
@@ -51,4 +52,13 @@ func readAll(f *os.File, mod fs.FileMode) ([]byte, error) {
 	}
 
 	return buf, nil
+}
+
+func detectContentType(f *os.File) (string, error) {
+	content, err := readAt(f, 0, 512)
+	if err != nil {
+		return "", err
+	}
+
+	return http.DetectContentType(content), nil
 }

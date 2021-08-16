@@ -2,8 +2,9 @@ package stream
 
 import (
 	"io/fs"
-	"net/http"
+	"mime"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"vincent.click/pkg/preflight/expect"
@@ -108,12 +109,16 @@ func (f *File) BytesAt(pos int64, bytes int) expect.Expectation {
 
 // ContentType returns an Expectation about the content type
 func (f *File) ContentType() expect.Expectation {
-	content, err := readAt(f.d, 0, 512)
-	if err != nil {
-		return expect.Faulty(f.T, err)
+	ext := filepath.Ext(f.d.Name())
+	if len(ext) > 0 {
+		typ := mime.TypeByExtension(ext)
+
+		return expect.Value(f.T, typ)
 	}
 
-	contentType := http.DetectContentType(content)
-
-	return expect.Value(f.T, contentType)
+	if typ, err := detectContentType(f.d); err != nil {
+		return expect.Faulty(f.T, err)
+	} else {
+		return expect.Value(f.T, typ)
+	}
 }
