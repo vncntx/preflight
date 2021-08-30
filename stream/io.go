@@ -3,10 +3,23 @@ package stream
 import (
 	"errors"
 	"io"
-	"io/fs"
 	"net/http"
 	"os"
+	"unicode"
+	"unicode/utf8"
 )
+
+type rule func(rune) bool
+
+// Set of line-terminating characters
+// https://en.wikipedia.org/wiki/Newline#Unicode
+var eol = &unicode.RangeTable{
+	R32: []unicode.Range32{
+		{0x000a, 0x000d, 1},
+		{0x0085, 0x0085, 1},
+		{0x2028, 0x2029, 1},
+	},
+}
 
 func read(f *os.File, max int) ([]byte, error) {
 	buf := make([]byte, max)
@@ -30,8 +43,8 @@ func readAt(f *os.File, pos int64, max int) ([]byte, error) {
 	return buf[:size], nil
 }
 
-func readAll(f *os.File, mod fs.FileMode) ([]byte, error) {
-	buf := make([]byte, 0, bufferSize)
+func readAll(f *os.File) ([]byte, error) {
+	buf := make([]byte, 0, blocksize)
 
 	for {
 		// next read will append to end of buffer
@@ -52,6 +65,43 @@ func readAll(f *os.File, mod fs.FileMode) ([]byte, error) {
 	}
 
 	return buf, nil
+}
+
+func readRunes(f *os.File, bytes []byte, accept rule) ([]rune, []byte, error) {
+	runes := []rune{}
+	dry := len(bytes) < 1 // whether the buffer needs to be replenished
+
+	for {
+		if dry {
+			// read the next block into the buffer
+			next, err := read(f, blocksize)
+			if err != nil {
+				return nil, bytes, err
+			}
+			bytes = append(bytes, next...)
+
+		}
+
+		if len(bytes) < 1 {
+			break
+		}
+
+		r, size := utf8.DecodeRune(bytes)
+		dry = (r == utf8.RuneError || size < 1)
+
+		if dry {
+			continue
+		}
+
+		if !accept(r) {
+			break
+		}
+
+		runes = append(runes, r)
+		bytes = bytes[size:]
+	}
+
+	return runes, bytes, nil
 }
 
 func detectContentType(f *os.File) (string, error) {

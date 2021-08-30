@@ -30,6 +30,7 @@ func TestFaultyExpectations(test *testing.T) {
 	t.Expect(isFaulty(f.Bytes())).Is().True()
 	t.Expect(isFaulty(f.NextBytes(5))).Is().True()
 	t.Expect(isFaulty(f.BytesAt(3, 5))).Is().True()
+	t.Expect(isFaulty(f.NextLine())).Is().True()
 	t.Expect(isFaulty(f.ContentType())).Is().True()
 }
 

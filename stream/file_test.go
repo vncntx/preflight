@@ -10,7 +10,7 @@ import (
 	"vincent.click/pkg/preflight/stream"
 )
 
-var content = inflate("Ad astra per aspera.")
+var content = inflate("Ad astra per aspera.\n")
 
 func TestFileClose(test *testing.T) {
 	t := preflight.Unit(test)
@@ -95,6 +95,17 @@ func TestFileBytesAt(test *testing.T) {
 
 	bytes := []byte("astra")
 	file.BytesAt(3, 5).Eq(bytes)
+}
+
+func TestFileNextLine(test *testing.T) {
+	t := preflight.Unit(test)
+
+	temp := createTemp(t, "ad astra\n\nper aspera")
+	file := stream.FromFile(t.T, temp)
+	defer cleanup(temp)
+
+	file.NextLine().Eq("ad astra")
+	file.NextLine().Eq("per aspera")
 }
 
 func TestFileContentType(test *testing.T) {

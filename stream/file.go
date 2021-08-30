@@ -1,11 +1,12 @@
 package stream
 
 import (
-	"io/fs"
+	"fmt"
 	"mime"
 	"os"
 	"path/filepath"
 	"testing"
+	"unicode"
 
 	"vincent.click/pkg/preflight/expect"
 )
@@ -14,21 +15,15 @@ import (
 type File struct {
 	*testing.T
 
-	d   *os.File
-	mod fs.FileMode
+	d *os.File
+	b []byte
 }
 
 // FromFile returns expectations based on a file descriptor
 func FromFile(t *testing.T, file *os.File) Stream {
-	info, err := file.Stat()
-	if err != nil {
-		return Faulty(t, err)
-	}
-
 	return &File{
-		T:   t,
-		d:   file,
-		mod: info.Mode(),
+		T: t,
+		d: file,
 	}
 }
 
@@ -49,7 +44,7 @@ func (f *File) Size() expect.Expectation {
 
 // Text returns an Expectation about the entire file contents as text
 func (f *File) Text() expect.Expectation {
-	txt, err := readAll(f.d, f.mod)
+	txt, err := readAll(f.d)
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
@@ -79,7 +74,7 @@ func (f *File) TextAt(pos int64, bytes int) expect.Expectation {
 
 // Bytes returns an Expectation about the entire file contents
 func (f *File) Bytes() expect.Expectation {
-	bytes, err := readAll(f.d, f.mod)
+	bytes, err := readAll(f.d)
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
@@ -105,6 +100,31 @@ func (f *File) BytesAt(pos int64, bytes int) expect.Expectation {
 	}
 
 	return expect.Value(f.T, data)
+}
+
+// NextLine returns an Expectation about the next line of text
+func (f *File) NextLine() expect.Expectation {
+	bytes := f.b
+
+	line, bytes, err := readRunes(f.d, bytes, func(r rune) bool {
+		return !unicode.In(r, eol)
+	})
+	if err != nil {
+		return expect.Faulty(f.T, err)
+	}
+
+	_, bytes, err = readRunes(f.d, bytes, func(r rune) bool {
+		return unicode.In(r, eol)
+	})
+	if err != nil {
+		return expect.Faulty(f.T, err)
+	}
+
+	f.b = bytes
+
+	fmt.Println(line)
+
+	return expect.Value(f.T, string(line))
 }
 
 // ContentType returns an Expectation about the content type

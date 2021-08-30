@@ -1,7 +1,7 @@
 package stream
 
 import (
-	"io/fs"
+	"bufio"
 	"os"
 	"testing"
 
@@ -12,8 +12,7 @@ import (
 type Writable struct {
 	*testing.T
 
-	r   *os.File
-	mod fs.FileMode
+	r *os.File
 }
 
 // FromWritten returns a new Writable
@@ -31,15 +30,9 @@ func FromWritten(t *testing.T, consumer Consumer) Stream {
 		return Faulty(t, err)
 	}
 
-	info, err := r.Stat()
-	if err != nil {
-		return Faulty(t, err)
-	}
-
 	return &Writable{
-		T:   t,
-		r:   r,
-		mod: info.Mode(),
+		T: t,
+		r: r,
 	}
 }
 
@@ -64,7 +57,7 @@ func (w *Writable) Size() expect.Expectation {
 
 // Text returns an Expectation about all text written to the stream
 func (w *Writable) Text() expect.Expectation {
-	txt, err := readAll(w.r, w.mod)
+	txt, err := readAll(w.r)
 	if err != nil {
 		return expect.Faulty(w.T, err)
 	}
@@ -94,7 +87,7 @@ func (w *Writable) TextAt(pos int64, bytes int) expect.Expectation {
 
 // Bytes returns an Expectation about all bytes written to the stream
 func (w *Writable) Bytes() expect.Expectation {
-	bytes, err := readAll(w.r, w.mod)
+	bytes, err := readAll(w.r)
 	if err != nil {
 		return expect.Faulty(w.T, err)
 	}
@@ -120,6 +113,18 @@ func (w *Writable) BytesAt(pos int64, bytes int) expect.Expectation {
 	}
 
 	return expect.Value(w.T, data)
+}
+
+// NextLine returns an Expectation about the next line of text
+func (w *Writable) NextLine() expect.Expectation {
+	scanner := bufio.NewScanner(w.r) // Scanner scans lines by default
+	if stopped := scanner.Scan(); stopped {
+		if err := scanner.Err(); err != nil {
+			return expect.Faulty(w.T, err)
+		}
+	}
+
+	return expect.Value(w.T, scanner.Text())
 }
 
 // ContentType returns an Expectation about content type written to the stream
