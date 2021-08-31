@@ -104,6 +104,24 @@ func readRunes(f *os.File, bytes []byte, accept rule) ([]rune, []byte, error) {
 	return runes, bytes, nil
 }
 
+func readLine(f *os.File, bytes []byte) ([]rune, []byte, error) {
+	line, bytes, err := readRunes(f, bytes, func(r rune) bool {
+		return !unicode.In(r, eol)
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	_, bytes, err = readRunes(f, bytes, func(r rune) bool {
+		return unicode.In(r, eol)
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return line, bytes, err
+}
+
 func detectContentType(f *os.File) (string, error) {
 	content, err := readAt(f, 0, 512)
 	if err != nil {

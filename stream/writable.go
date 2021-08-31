@@ -3,7 +3,6 @@ package stream
 import (
 	"os"
 	"testing"
-	"unicode"
 
 	"vincent.click/pkg/preflight/expect"
 )
@@ -118,18 +117,7 @@ func (w *Writable) BytesAt(pos int64, bytes int) expect.Expectation {
 
 // NextLine returns an Expectation about the next line of text
 func (w *Writable) NextLine() expect.Expectation {
-	bytes := w.b
-
-	line, bytes, err := readRunes(w.r, bytes, func(r rune) bool {
-		return !unicode.In(r, eol)
-	})
-	if err != nil {
-		return expect.Faulty(w.T, err)
-	}
-
-	_, bytes, err = readRunes(w.r, bytes, func(r rune) bool {
-		return unicode.In(r, eol)
-	})
+	line, bytes, err := readLine(w.r, w.b)
 	if err != nil {
 		return expect.Faulty(w.T, err)
 	}

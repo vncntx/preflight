@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"unicode"
 
 	"vincent.click/pkg/preflight/expect"
 )
@@ -103,18 +102,7 @@ func (f *File) BytesAt(pos int64, bytes int) expect.Expectation {
 
 // NextLine returns an Expectation about the next line of text
 func (f *File) NextLine() expect.Expectation {
-	bytes := f.b
-
-	line, bytes, err := readRunes(f.d, bytes, func(r rune) bool {
-		return !unicode.In(r, eol)
-	})
-	if err != nil {
-		return expect.Faulty(f.T, err)
-	}
-
-	_, bytes, err = readRunes(f.d, bytes, func(r rune) bool {
-		return unicode.In(r, eol)
-	})
+	line, bytes, err := readLine(f.d, f.b)
 	if err != nil {
 		return expect.Faulty(f.T, err)
 	}
