@@ -1,9 +1,9 @@
 package stream
 
 import (
-	"bufio"
 	"os"
 	"testing"
+	"unicode"
 
 	"vincent.click/pkg/preflight/expect"
 )
@@ -13,6 +13,7 @@ type Writable struct {
 	*testing.T
 
 	r *os.File
+	b []byte
 }
 
 // FromWritten returns a new Writable
@@ -117,14 +118,25 @@ func (w *Writable) BytesAt(pos int64, bytes int) expect.Expectation {
 
 // NextLine returns an Expectation about the next line of text
 func (w *Writable) NextLine() expect.Expectation {
-	scanner := bufio.NewScanner(w.r) // Scanner scans lines by default
-	if stopped := scanner.Scan(); stopped {
-		if err := scanner.Err(); err != nil {
-			return expect.Faulty(w.T, err)
-		}
+	bytes := w.b
+
+	line, bytes, err := readRunes(w.r, bytes, func(r rune) bool {
+		return !unicode.In(r, eol)
+	})
+	if err != nil {
+		return expect.Faulty(w.T, err)
 	}
 
-	return expect.Value(w.T, scanner.Text())
+	_, bytes, err = readRunes(w.r, bytes, func(r rune) bool {
+		return unicode.In(r, eol)
+	})
+	if err != nil {
+		return expect.Faulty(w.T, err)
+	}
+
+	w.b = bytes
+
+	return expect.Value(w.T, string(line))
 }
 
 // ContentType returns an Expectation about content type written to the stream

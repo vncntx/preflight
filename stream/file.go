@@ -1,7 +1,6 @@
 package stream
 
 import (
-	"fmt"
 	"mime"
 	"os"
 	"path/filepath"
@@ -121,8 +120,6 @@ func (f *File) NextLine() expect.Expectation {
 	}
 
 	f.b = bytes
-
-	fmt.Println(line)
 
 	return expect.Value(f.T, string(line))
 }

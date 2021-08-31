@@ -100,12 +100,12 @@ func TestFileBytesAt(test *testing.T) {
 func TestFileNextLine(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, "ad astra\n\nper aspera")
+	temp := createTemp(t, content)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
-	file.NextLine().Eq("ad astra")
-	file.NextLine().Eq("per aspera")
+	file.NextLine().Eq("Ad astra per aspera.")
+	file.NextLine().Eq("Ad astra per aspera.")
 }
 
 func TestFileContentType(test *testing.T) {
