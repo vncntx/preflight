@@ -133,16 +133,19 @@ func createTemp(t *preflight.Test, content []byte) *os.File {
 	file, err := ioutil.TempFile(os.TempDir(), "preflight-")
 	if err != nil {
 		t.Error(err)
+
 		return nil
 	}
 
 	if _, err := file.Write(content); err != nil {
 		t.Error(err)
+
 		return nil
 	}
 
 	if _, err := file.Seek(0, io.SeekStart); err != nil {
 		t.Error(err)
+
 		return nil
 	}
 
