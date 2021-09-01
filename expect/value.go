@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"regexp"
 	"testing"
+
+	"vincent.click/pkg/preflight/expect/kind"
 )
 
 // ExpectedValue is an expectation on a realized value
@@ -58,6 +60,41 @@ func (e *ExpectedValue) IsNot() Expectation {
 // DoesNot is equivalent to Not()
 func (e *ExpectedValue) DoesNot() Expectation {
 	return e.Not()
+}
+
+// At returns an expectation about the element at the given index
+func (e *ExpectedValue) At(index interface{}) Expectation {
+	k := kind.Of(e.actual)
+
+	switch k {
+	case kind.List:
+		if i, ok := index.(int); ok {
+			element := reflect.ValueOf(e.actual).Index(i).Interface()
+
+			return Value(e.T, element)
+		}
+
+		return Faulty(e.T, fmt.Errorf("%s: slice or array index must be an int", e.Name()))
+
+	case kind.String:
+		if i, ok := index.(int); ok {
+			element := []rune(e.actual.(string))[i]
+
+			return Value(e.T, element)
+		}
+
+		return Faulty(e.T, fmt.Errorf("%s: string index must be an int", e.Name()))
+
+	case kind.Map:
+
+		key := reflect.ValueOf(index)
+		element := reflect.ValueOf(e.actual).MapIndex(key).Interface()
+
+		return Value(e.T, element)
+
+	default:
+		return Faulty(e.T, fmt.Errorf("%s: %v: not a slice, array, string, or map", e.Name(), e.actual))
+	}
 }
 
 // Nil asserts the value is nil

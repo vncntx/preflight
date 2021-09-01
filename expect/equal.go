@@ -45,6 +45,10 @@ func equal(a, b interface{}) bool {
 
 		return mapsEqual(x, y)
 
+	case kind.String:
+
+		return x.String() == y.String()
+
 	default:
 		return a == b
 	}

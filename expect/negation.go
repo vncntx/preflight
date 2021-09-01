@@ -49,6 +49,11 @@ func (not *Negation) DoesNot() Expectation {
 	return not.Not()
 }
 
+// At returns an negated expectation about the element at the given index
+func (not *Negation) At(index interface{}) Expectation {
+	return not.inverse.At(index).Not()
+}
+
 // Nil asserts the value is not nil
 func (not *Negation) Nil() {
 	not.Equals(nil)

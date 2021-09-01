@@ -38,7 +38,8 @@ func TestOf(test *testing.T) {
 
 	t.Expect(kind.Of(make(map[int]int))).Eq(kind.Map)
 
+	t.Expect(kind.Of("text")).Eq(kind.String)
+
 	t.Expect(kind.Of(t)).Eq(kind.Std)
-	t.Expect(kind.Of("text")).Eq(kind.Std)
 	t.Expect(kind.Of(struct{}{})).Eq(kind.Std)
 }

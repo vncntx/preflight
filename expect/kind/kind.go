@@ -14,6 +14,7 @@ const (
 	Real
 	Complex
 	List
+	String
 	Map
 )
 
@@ -64,6 +65,10 @@ func Of(x interface{}) Kind {
 	case reflect.Map:
 
 		return Map
+
+	case reflect.String:
+
+		return String
 
 	default:
 		return Std

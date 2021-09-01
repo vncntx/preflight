@@ -34,6 +34,26 @@ func TestValueIsNot(test *testing.T) {
 	}
 }
 
+func TestValueAt(test *testing.T) {
+	t := preflight.Unit(test)
+
+	v1 := expect.Value(t.T, "xyz")
+	v1.At(2).Eq('z')
+
+	v2 := expect.Value(t.T, []int{5, 10, 15})
+	v2.At(2).Eq(15)
+
+	v3 := expect.Value(t.T, [3]int{5, 10, 15})
+	v3.At(2).Eq(15)
+
+	v4 := expect.Value(t.T, map[int]int{
+		1: 5,
+		2: 10,
+		3: 15,
+	})
+	v4.At(3).Eq(15)
+}
+
 func TestValueIsNil(test *testing.T) {
 	t := preflight.Unit(test)
 

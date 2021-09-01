@@ -29,6 +29,26 @@ func TestNegationIsNot(test *testing.T) {
 	t.Expect(not.DoesNot()).Eq(v)
 }
 
+func TestNegationAt(test *testing.T) {
+	t := preflight.Unit(test)
+
+	v1 := expect.Value(t.T, "xyz")
+	v1.Not().At(2).Eq('x')
+
+	v2 := expect.Value(t.T, []int{5, 10, 15})
+	v2.Not().At(2).Eq(10)
+
+	v3 := expect.Value(t.T, [3]int{5, 10, 15})
+	v3.Not().At(2).Eq(10)
+
+	v4 := expect.Value(t.T, map[int]int{
+		1: 5,
+		2: 10,
+		3: 15,
+	})
+	v4.Not().At(3).Eq(10)
+}
+
 func TestNegationIsNil(test *testing.T) {
 	t := preflight.Unit(test)
 

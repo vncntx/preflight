@@ -51,6 +51,11 @@ func (f *Fault) DoesNot() Expectation {
 	return f
 }
 
+// At returns the current expectation
+func (f *Fault) At(index interface{}) Expectation {
+	return f
+}
+
 // Nil always results in an error
 func (f *Fault) Nil() {
 	f.Error(f.err)

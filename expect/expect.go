@@ -15,6 +15,10 @@ type Expectation interface {
 	IsNot() Expectation
 	DoesNot() Expectation
 
+	// Indexing
+
+	At(index interface{}) Expectation
+
 	// Assertions
 
 	Nil()
