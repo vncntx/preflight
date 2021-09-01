@@ -104,7 +104,7 @@ func TestFileLines(test *testing.T) {
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
-	file.Lines().HasLength(2)
+	file.Lines().At(1).Eq("Sic itur ad astra.")
 }
 
 func TestFileNextLine(test *testing.T) {

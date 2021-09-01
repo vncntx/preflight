@@ -98,7 +98,7 @@ func TestWritableLines(test *testing.T) {
 	w := stream.FromWritten(t.T, writeContent)
 	defer w.Close()
 
-	w.Lines().HasLength(2)
+	w.Lines().At(1).Eq("Sic itur ad astra.")
 }
 
 func TestWritableNextLine(test *testing.T) {
