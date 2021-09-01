@@ -20,6 +20,8 @@ type Stream interface {
 	NextBytes(bytes int) expect.Expectation
 	// BytesAt returns an Expectation about the bytes at a specific position
 	BytesAt(pos int64, bytes int) expect.Expectation
+	// Lines returns an Expectation about the data as lines of text
+	Lines() expect.Expectation
 	// NextLine returns an Expectation about the next line of text
 	NextLine() expect.Expectation
 	// ContentType returns an Expectation about the media type.

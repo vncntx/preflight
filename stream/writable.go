@@ -115,6 +115,28 @@ func (w *Writable) BytesAt(pos int64, bytes int) expect.Expectation {
 	return expect.Value(w.T, data)
 }
 
+// Lines returns an Expectation about all lines of text written to the stream
+func (w *Writable) Lines() expect.Expectation {
+	lines := []string{}
+
+	for {
+		line, bytes, err := readLine(w.r, w.b)
+		if err != nil {
+			return expect.Faulty(w.T, err)
+		}
+
+		w.b = bytes
+
+		if len(line) < 1 {
+			break
+		}
+
+		lines = append(lines, string(line))
+	}
+
+	return expect.Value(w.T, lines)
+}
+
 // NextLine returns an Expectation about the next line of text
 func (w *Writable) NextLine() expect.Expectation {
 	line, bytes, err := readLine(w.r, w.b)

@@ -100,6 +100,28 @@ func (f *File) BytesAt(pos int64, bytes int) expect.Expectation {
 	return expect.Value(f.T, data)
 }
 
+// Lines returns an Expectation about the entire file contents as lines of text
+func (f *File) Lines() expect.Expectation {
+	lines := []string{}
+
+	for {
+		line, bytes, err := readLine(f.d, f.b)
+		if err != nil {
+			return expect.Faulty(f.T, err)
+		}
+
+		f.b = bytes
+
+		if len(line) < 1 {
+			break
+		}
+
+		lines = append(lines, string(line))
+	}
+
+	return expect.Value(f.T, lines)
+}
+
 // NextLine returns an Expectation about the next line of text
 func (f *File) NextLine() expect.Expectation {
 	line, bytes, err := readLine(f.d, f.b)

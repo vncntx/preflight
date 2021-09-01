@@ -31,7 +31,7 @@ func TestWritableSize(test *testing.T) {
 	w := stream.FromWritten(t.T, writeContent)
 	defer w.Close()
 
-	w.Size().Eq(len(content))
+	w.Size().Eq(len(contents))
 }
 
 func TestWritableText(test *testing.T) {
@@ -40,7 +40,8 @@ func TestWritableText(test *testing.T) {
 	w := stream.FromWritten(t.T, writeContent)
 	defer w.Close()
 
-	w.Text().Eq(content)
+	text := string(contents)
+	w.Text().Eq(text)
 }
 
 func TestWritableNextText(test *testing.T) {
@@ -68,8 +69,7 @@ func TestWritableBytes(test *testing.T) {
 	w := stream.FromWritten(t.T, writeContent)
 	defer w.Close()
 
-	bytes := []byte(content)
-	w.Bytes().Eq(bytes)
+	w.Bytes().Eq(contents)
 }
 
 func TestWritableNextBytes(test *testing.T) {
@@ -92,6 +92,15 @@ func TestWritableBytesAt(test *testing.T) {
 	w.BytesAt(3, 5).Eq(bytes)
 }
 
+func TestWritableLines(test *testing.T) {
+	t := preflight.Unit(test)
+
+	w := stream.FromWritten(t.T, writeContent)
+	defer w.Close()
+
+	w.Lines().HasLength(2)
+}
+
 func TestWritableNextLine(test *testing.T) {
 	t := preflight.Unit(test)
 
@@ -99,7 +108,8 @@ func TestWritableNextLine(test *testing.T) {
 	defer w.Close()
 
 	w.NextLine().Eq("Ad astra per aspera.")
-	w.NextLine().Eq("Ad astra per aspera.")
+	w.NextLine().Eq("Sic itur ad astra.")
+	w.NextLine().Is().Empty()
 }
 
 func TestWritableContentType(test *testing.T) {
@@ -114,7 +124,7 @@ func TestWritableContentType(test *testing.T) {
 func writeContent(w *os.File) {
 	defer w.Close()
 
-	if _, err := w.WriteString(content); err != nil {
+	if _, err := w.Write(contents); err != nil {
 		panic(err)
 	}
 }

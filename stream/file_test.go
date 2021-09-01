@@ -10,14 +10,14 @@ import (
 	"vincent.click/pkg/preflight/stream"
 )
 
-var content = inflate("Ad astra per aspera.\n")
+var contents = []byte("Ad astra per aspera.\nSic itur ad astra.\n")
 
 func TestFileClose(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
-	defer cleanup(temp)
+	defer rm(temp)
 
 	t.Expect(file.Close()).Is().Nil()
 }
@@ -25,28 +25,29 @@ func TestFileClose(test *testing.T) {
 func TestFileSize(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
-	size := len(content)
+	size := len(contents)
 	file.Size().Eq(size)
 }
 
 func TestFileText(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
-	file.Text().Eq(content)
+	text := string(contents)
+	file.Text().Eq(text)
 }
 
 func TestFileNextText(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
@@ -57,7 +58,7 @@ func TestFileNextText(test *testing.T) {
 func TestFileTextAt(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
@@ -67,18 +68,17 @@ func TestFileTextAt(test *testing.T) {
 func TestFileBytes(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
-	bytes := []byte(content)
-	file.Bytes().Eq(bytes)
+	file.Bytes().Eq(contents)
 }
 
 func TestFileNextBytes(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
@@ -89,7 +89,7 @@ func TestFileNextBytes(test *testing.T) {
 func TestFileBytesAt(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
@@ -97,56 +97,67 @@ func TestFileBytesAt(test *testing.T) {
 	file.BytesAt(3, 5).Eq(bytes)
 }
 
+func TestFileLines(test *testing.T) {
+	t := preflight.Unit(test)
+
+	temp := createTemp(t, contents)
+	file := stream.FromFile(t.T, temp)
+	defer cleanup(temp)
+
+	file.Lines().HasLength(2)
+}
+
 func TestFileNextLine(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.NextLine().Eq("Ad astra per aspera.")
-	file.NextLine().Eq("Ad astra per aspera.")
+	file.NextLine().Eq("Sic itur ad astra.")
+	file.NextLine().Is().Empty()
 }
 
 func TestFileContentType(test *testing.T) {
 	t := preflight.Unit(test)
 
-	temp := createTemp(t, content)
+	temp := createTemp(t, contents)
 	file := stream.FromFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.ContentType().Matches("text/plain")
 }
 
-func createTemp(t *preflight.Test, content string) *os.File {
+func createTemp(t *preflight.Test, content []byte) *os.File {
 	file, err := ioutil.TempFile(os.TempDir(), "preflight-")
 	if err != nil {
 		t.Error(err)
+		return nil
 	}
-	if _, err := file.WriteString(content); err != nil {
+
+	if _, err := file.Write(content); err != nil {
 		t.Error(err)
+		return nil
 	}
-	// go back to the beginning to prepare for reads
+
 	if _, err := file.Seek(0, io.SeekStart); err != nil {
 		t.Error(err)
+		return nil
 	}
 
 	return file
 }
 
-// inflate content so that tests cover buffers and seeks
-func inflate(content string) string {
-	result := ""
-	for i := 0; i < 10_000; i++ {
-		result += content
+func cleanup(f *os.File) {
+	if err := f.Close(); err != nil {
+		panic(err)
 	}
 
-	return result
+	rm(f)
 }
 
-func cleanup(f *os.File) {
-	_ = f.Close()
-
+func rm(f *os.File) {
 	if err := os.Remove(f.Name()); err != nil {
 		panic(err)
 	}
