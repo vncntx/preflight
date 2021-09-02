@@ -11,7 +11,7 @@ import (
 type Writable struct {
 	*testing.T
 
-	r *os.File
+	r reader
 	b []byte
 }
 

@@ -9,6 +9,14 @@ import (
 	"unicode/utf8"
 )
 
+type reader interface {
+	io.ReaderAt
+	io.ReadCloser
+
+	Name() string
+	Stat() (os.FileInfo, error)
+}
+
 type rule func(rune) bool
 
 // Set of line-terminating characters
@@ -21,10 +29,10 @@ var eol = &unicode.RangeTable{
 	},
 }
 
-func read(f *os.File, max int) ([]byte, error) {
+func read(src io.Reader, max int) ([]byte, error) {
 	buf := make([]byte, max)
 
-	size, err := f.Read(buf)
+	size, err := src.Read(buf)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return nil, err
 	}
@@ -32,10 +40,10 @@ func read(f *os.File, max int) ([]byte, error) {
 	return buf[:size], nil
 }
 
-func readAt(f *os.File, pos int64, max int) ([]byte, error) {
+func readAt(src io.ReaderAt, pos int64, max int) ([]byte, error) {
 	buf := make([]byte, max)
 
-	size, err := f.ReadAt(buf, pos)
+	size, err := src.ReadAt(buf, pos)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return nil, err
 	}
@@ -43,7 +51,7 @@ func readAt(f *os.File, pos int64, max int) ([]byte, error) {
 	return buf[:size], nil
 }
 
-func readAll(f *os.File) ([]byte, error) {
+func readAll(src io.Reader) ([]byte, error) {
 	buf := make([]byte, 0, blocksize)
 
 	for {
@@ -54,7 +62,7 @@ func readAll(f *os.File) ([]byte, error) {
 			buf = append(buf, 0)[:len(buf)]
 		}
 
-		n, err := f.Read(buf[start:cap(buf)])
+		n, err := src.Read(buf[start:cap(buf)])
 		if errors.Is(err, io.EOF) {
 			break
 		} else if err != nil {
@@ -67,14 +75,14 @@ func readAll(f *os.File) ([]byte, error) {
 	return buf, nil
 }
 
-func readRunes(f *os.File, bytes []byte, accept rule) ([]rune, []byte, error) {
+func readRunes(src io.Reader, bytes []byte, accept rule) ([]rune, []byte, error) {
 	runes := []rune{}
 	dry := len(bytes) < 1 // whether the buffer needs to be replenished
 
 	for {
 		if dry {
 			// read the next block into the buffer
-			next, err := read(f, blocksize)
+			next, err := read(src, blocksize)
 			if err != nil {
 				return nil, bytes, err
 			}
@@ -104,15 +112,15 @@ func readRunes(f *os.File, bytes []byte, accept rule) ([]rune, []byte, error) {
 	return runes, bytes, nil
 }
 
-func readLine(f *os.File, bytes []byte) ([]rune, []byte, error) {
-	line, bytes, err := readRunes(f, bytes, func(r rune) bool {
+func readLine(src io.Reader, bytes []byte) ([]rune, []byte, error) {
+	line, bytes, err := readRunes(src, bytes, func(r rune) bool {
 		return !unicode.In(r, eol)
 	})
 	if err != nil {
 		return nil, nil, err
 	}
 
-	_, bytes, err = readRunes(f, bytes, func(r rune) bool {
+	_, bytes, err = readRunes(src, bytes, func(r rune) bool {
 		return unicode.In(r, eol)
 	})
 	if err != nil {
@@ -122,8 +130,8 @@ func readLine(f *os.File, bytes []byte) ([]rune, []byte, error) {
 	return line, bytes, err
 }
 
-func detectContentType(f *os.File) (string, error) {
-	content, err := readAt(f, 0, 512)
+func detectContentType(src io.ReaderAt) (string, error) {
+	content, err := readAt(src, 0, 512)
 	if err != nil {
 		return "", err
 	}
