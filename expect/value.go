@@ -153,13 +153,13 @@ func (e *ExpectedValue) EqualTo(expected interface{}) {
 
 // Matches asserts that the value matches a given pattern
 func (e *ExpectedValue) Matches(pattern string) {
-	actual := fmt.Sprint(e.actual) // convert to string
+	str := fmt.Sprint(e.actual)
 
-	match, err := regexp.MatchString(pattern, actual)
+	match, err := regexp.MatchString(pattern, str)
 	if err != nil {
-		e.Error(err)
+		e.Errorf("%s: %s", e.Name(), err)
 	} else if !match {
-		e.Errorf("%s: '%#v' does not match /%s/", e.Name(), e.actual, pattern)
+		e.Errorf("%s: '%s' does not match /%s/", e.Name(), str, pattern)
 	}
 }
 

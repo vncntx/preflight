@@ -110,13 +110,13 @@ func (not *Negation) EqualTo(given interface{}) {
 
 // Matches asserts that the value does not match a given pattern
 func (not *Negation) Matches(pattern string) {
-	actual := fmt.Sprint(not.inverse.actual) // convert to string
+	str := fmt.Sprint(not.inverse.actual)
 
-	match, err := regexp.MatchString(pattern, actual)
+	match, err := regexp.MatchString(pattern, str)
 	if err != nil {
-		not.Error(err)
+		not.Errorf("%s: %s", not.Name(), err)
 	} else if match {
-		not.Errorf("%s: '%v' matches /%s/", not.Name(), not.inverse.actual, pattern)
+		not.Errorf("%s: '%s' matches /%s/", not.Name(), str, pattern)
 	}
 }
 
