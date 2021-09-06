@@ -16,7 +16,13 @@ Expectations and assertions for testing in Go
 go get vincent.click/pkg/preflight
 ```
 
-## Usage
+## Docs
+
+- [Expectations](./docs/expectation.md)
+- [Streams](./docs/stream.md)
+- [Scaffold](./docs/scaffold.md)
+
+## Getting Started
 
 To write unit tests, use the **preflight** package to wrap around the standard **testing** package.
 
@@ -29,8 +35,6 @@ func TestMethod(test *testing.T) {
     t.Expect(2 * 5).Equals(25)
 }
 ```
-
-Read the [docs](https://pkg.go.dev/vincent.click/pkg/preflight) for more detailed information.
 
 ## Development
 
