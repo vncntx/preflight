@@ -16,23 +16,25 @@ Expectations and assertions for testing in Go
 go get vincent.click/pkg/preflight
 ```
 
-## Usage
+## Docs
 
-A `preflight.Test` extends a standard `testing.T` instance with expectations about values, files and various side-effects.
+- [Expectations](./docs/expectation.md)
+- [Streams](./docs/stream.md)
+- [Scaffold](./docs/scaffold.md)
+
+## Getting Started
+
+To write unit tests, use the **preflight** package to wrap around the standard **testing** package.
+
+An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values and behaviors.
 
 ```go
 func TestMethod(test *testing.T) {
     t := preflight.Unit(test)
 
-    t.Expect(7 * 49).Equals(343)
-
-    t.Expect(5 % 2 == 0).IsNot().True()
-    
-    t.Expect([]int{3, 4, 3}).HasLength(3)
+    t.Expect(2 * 5).Equals(25)
 }
 ```
-
-Read the [docs](https://pkg.go.dev/vincent.click/pkg/preflight) for more information.
 
 ## Development
 
