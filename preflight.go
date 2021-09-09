@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
+	"vincent.click/pkg/preflight/captor"
 	"vincent.click/pkg/preflight/expect"
-	"vincent.click/pkg/preflight/scaffold"
 	"vincent.click/pkg/preflight/stream"
 )
 
@@ -30,15 +30,15 @@ func (t *Test) ExpectWritten(consumer stream.Consumer) stream.Stream {
 }
 
 // ExpectExitCode returns an expectation about a captured exit code
-func (t *Test) ExpectExitCode(act scaffold.Action) expect.Expectation {
-	code := Scaffold.CaptureExitCode(act)
+func (t *Test) ExpectExitCode(act captor.Action) expect.Expectation {
+	code := Captor.CaptureExitCode(act)
 
 	return expect.Value(t.T, code)
 }
 
 // ExpectPanic returns an expectation about the cause of a panicking goroutine
-func (t *Test) ExpectPanic(act scaffold.Action) expect.Expectation {
-	cause := Scaffold.CapturePanic(act)
+func (t *Test) ExpectPanic(act captor.Action) expect.Expectation {
+	cause := Captor.CapturePanic(act)
 
 	return expect.Value(t.T, cause)
 }

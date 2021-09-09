@@ -1,20 +1,20 @@
-package scaffold_test
+package captor_test
 
 import (
 	"testing"
 
 	"vincent.click/pkg/preflight"
-	"vincent.click/pkg/preflight/scaffold"
+	"vincent.click/pkg/preflight/captor"
 )
 
 func TestCaptureExitCode(test *testing.T) {
 	t := preflight.Unit(test)
 
-	s := scaffold.New()
+	s := captor.New()
 
 	exit := 1
 	action := func() {
-		s.OSExit(exit)
+		s.Exit(exit)
 	}
 
 	t.Expect(s.CaptureExitCode(action)).Eq(exit)
@@ -23,7 +23,7 @@ func TestCaptureExitCode(test *testing.T) {
 func TestCapturePanic(test *testing.T) {
 	t := preflight.Unit(test)
 
-	s := scaffold.New()
+	s := captor.New()
 
 	cause := "at the disco"
 	action := func() {

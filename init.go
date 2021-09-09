@@ -1,7 +1,5 @@
 package preflight
 
-import "vincent.click/pkg/preflight/scaffold"
+import "vincent.click/pkg/preflight/captor"
 
-var (
-	Scaffold = scaffold.New()
-)
+var Captor = captor.New()
