@@ -20,7 +20,7 @@ go get vincent.click/pkg/preflight
 
 To write unit tests, use the **preflight** package to wrap around the standard **testing** package.
 
-An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values, data streams,  and behaviors.
+An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values and behaviors. Expectations can be created from any variable or expression, [files and data streams](./docs/stream.md), or [builtin function calls](./docs/captor.md).
 
 ```go
 func TestMethod(test *testing.T) {
