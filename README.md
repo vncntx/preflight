@@ -8,7 +8,7 @@
 [![Conventional Commits](https://img.shields.io/badge/commits-conventional-0047ab.svg?labelColor=16161b)](https://conventionalcommits.org)
 [![License: BSD-3](https://img.shields.io/github/license/vncntx/preflight.svg?labelColor=16161b&color=0047ab)](./LICENSE)
 
-Expectations and assertions for testing in Go
+Readable assertions for tests in Go
 
 ## Installation
 
@@ -20,7 +20,9 @@ go get vincent.click/pkg/preflight
 
 To write unit tests, use the **preflight** package to wrap around the standard **testing** package.
 
-An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values and behaviors. Expectations can be created from any variable or expression, [files and data streams](./docs/stream.md), or [builtin function calls](./docs/captor.md).
+An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values and behaviors.
+
+Learn more in the [docs](./docs/docs.md).
 
 ```go
 func TestMethod(test *testing.T) {
