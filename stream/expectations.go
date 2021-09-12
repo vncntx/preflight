@@ -2,9 +2,9 @@ package stream
 
 import "vincent.click/pkg/preflight/expect"
 
-// Stream is a set of expectations about a data stream
-type Stream interface {
-	// Close releases stream resources
+// Expectations is a set of expectations about a data stream
+type Expectations interface {
+	// Close frees up resources
 	Close() error
 
 	// Size returns an Expectation about the size of the data in bytes

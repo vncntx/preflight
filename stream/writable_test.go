@@ -12,7 +12,7 @@ func TestWritableClose(test *testing.T) {
 	t := preflight.Unit(test)
 
 	var name string
-	w := stream.FromWritten(t.T, func(w *os.File) {
+	w := stream.ExpectWritten(t.T, func(w *os.File) {
 		defer w.Close()
 
 		name = w.Name()
@@ -28,7 +28,7 @@ func TestWritableClose(test *testing.T) {
 func TestWritableSize(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.Size().Eq(len(contents))
@@ -37,7 +37,7 @@ func TestWritableSize(test *testing.T) {
 func TestWritableText(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	text := string(contents)
@@ -47,7 +47,7 @@ func TestWritableText(test *testing.T) {
 func TestWritableNextText(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.NextText(3).Eq("Ad ")
@@ -57,7 +57,7 @@ func TestWritableNextText(test *testing.T) {
 func TestWritableTextAt(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.TextAt(3, 5).Eq("astra")
@@ -66,7 +66,7 @@ func TestWritableTextAt(test *testing.T) {
 func TestWritableBytes(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.Bytes().Eq(contents)
@@ -75,7 +75,7 @@ func TestWritableBytes(test *testing.T) {
 func TestWritableNextBytes(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.NextBytes(3).Eq([]byte("Ad "))
@@ -85,7 +85,7 @@ func TestWritableNextBytes(test *testing.T) {
 func TestWritableBytesAt(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	bytes := []byte("astra")
@@ -95,7 +95,7 @@ func TestWritableBytesAt(test *testing.T) {
 func TestWritableLines(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.Lines().At(1).Eq("Sic itur ad astra.")
@@ -104,7 +104,7 @@ func TestWritableLines(test *testing.T) {
 func TestWritableNextLine(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.NextLine().Eq("Ad astra per aspera.")
@@ -115,7 +115,7 @@ func TestWritableNextLine(test *testing.T) {
 func TestWritableContentType(test *testing.T) {
 	t := preflight.Unit(test)
 
-	w := stream.FromWritten(t.T, writeContent)
+	w := stream.ExpectWritten(t.T, writeContent)
 	defer w.Close()
 
 	w.ContentType().Matches("text/plain")

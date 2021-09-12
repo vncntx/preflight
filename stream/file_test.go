@@ -16,7 +16,7 @@ func TestFileClose(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer rm(temp)
 
 	t.Expect(file.Close()).Is().Nil()
@@ -26,7 +26,7 @@ func TestFileSize(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	size := len(contents)
@@ -37,7 +37,7 @@ func TestFileText(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	text := string(contents)
@@ -48,7 +48,7 @@ func TestFileNextText(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.NextText(3).Eq("Ad ")
@@ -59,7 +59,7 @@ func TestFileTextAt(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.TextAt(3, 5).Eq("astra")
@@ -69,7 +69,7 @@ func TestFileBytes(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.Bytes().Eq(contents)
@@ -79,7 +79,7 @@ func TestFileNextBytes(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.NextBytes(3).Eq([]byte("Ad "))
@@ -90,7 +90,7 @@ func TestFileBytesAt(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	bytes := []byte("astra")
@@ -101,7 +101,7 @@ func TestFileLines(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.Lines().At(1).Eq("Sic itur ad astra.")
@@ -111,7 +111,7 @@ func TestFileNextLine(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.NextLine().Eq("Ad astra per aspera.")
@@ -123,7 +123,7 @@ func TestFileContentType(test *testing.T) {
 	t := preflight.Unit(test)
 
 	temp := createTemp(t, contents)
-	file := stream.FromFile(t.T, temp)
+	file := stream.ExpectFile(t.T, temp)
 	defer cleanup(temp)
 
 	file.ContentType().Matches("text/plain")

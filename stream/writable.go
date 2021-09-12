@@ -15,8 +15,8 @@ type Writable struct {
 	b []byte
 }
 
-// FromWritten returns a new Writable
-func FromWritten(t *testing.T, consumer Consumer) Stream {
+// ExpectWritten returns expectations based on a function that writes to a stream
+func ExpectWritten(t *testing.T, consumer Consumer) Expectations {
 	w, err := os.CreateTemp(os.TempDir(), "preflight-")
 	if err != nil {
 		return Faulty(t, err)

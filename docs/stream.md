@@ -1,13 +1,13 @@
-# Streams
+# Files and Data Streams
 
-A [**Stream**](https://pkg.go.dev/vincent.click/pkg/preflight/stream#Stream) is a set of [expectations](./expectation.md) about a file or data stream. The test is responsible for closing the stream by calling the `Close` method. It can be created either directly from a file descriptor or from a function that writes to a data stream.
+Sets of expectations can be created either directly from a file descriptor or from a function that writes to a data stream.
 
 <details>
 <summary>File Descriptor</summary>
 
 
 ```go
-func TestStreams(test *testing.T) {
+func TestFile(test *testing.T) {
     t := preflight.Unit(test)
 
     file, err := os.Open("file.txt")
@@ -29,7 +29,7 @@ func TestStreams(test *testing.T) {
 
 
 ```go
-func TestStreams(test *testing.T) {
+func TestWritable(test *testing.T) {
     t := preflight.Unit(test)
 
     f := t.ExpectWritten(func (w *os.File) {

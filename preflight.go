@@ -20,13 +20,13 @@ func (t *Test) Expect(actual interface{}) expect.Expectation {
 }
 
 // ExpectFile returns a set of expectations about a file
-func (t *Test) ExpectFile(f *os.File) stream.Stream {
-	return stream.FromFile(t.T, f)
+func (t *Test) ExpectFile(f *os.File) stream.Expectations {
+	return stream.ExpectFile(t.T, f)
 }
 
 // ExpectWritten returns a set of expectations about data written to a stream
-func (t *Test) ExpectWritten(consumer stream.Consumer) stream.Stream {
-	return stream.FromWritten(t.T, consumer)
+func (t *Test) ExpectWritten(consumer stream.Consumer) stream.Expectations {
+	return stream.ExpectWritten(t.T, consumer)
 }
 
 // ExpectExitCode returns an expectation about a captured exit code

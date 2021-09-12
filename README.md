@@ -16,17 +16,11 @@ Expectations and assertions for testing in Go
 go get vincent.click/pkg/preflight
 ```
 
-## Docs
-
-- [Expectations](./docs/expectation.md)
-- [Streams](./docs/stream.md)
-- [Scaffold](./docs/scaffold.md)
-
 ## Getting Started
 
 To write unit tests, use the **preflight** package to wrap around the standard **testing** package.
 
-An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values and behaviors.
+An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values, data streams,  and behaviors.
 
 ```go
 func TestMethod(test *testing.T) {

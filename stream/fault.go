@@ -14,7 +14,7 @@ type Fault struct {
 }
 
 // Faulty returns a new Fault
-func Faulty(t *testing.T, err error) Stream {
+func Faulty(t *testing.T, err error) Expectations {
 	return &Fault{t, err}
 }
 

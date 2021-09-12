@@ -17,8 +17,8 @@ type File struct {
 	b []byte
 }
 
-// FromFile returns expectations based on a file descriptor
-func FromFile(t *testing.T, file *os.File) Stream {
+// ExpectFile returns expectations based on a file descriptor
+func ExpectFile(t *testing.T, file *os.File) Expectations {
 	return &File{
 		T: t,
 		r: file,
