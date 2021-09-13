@@ -18,7 +18,7 @@ go get vincent.click/pkg/preflight
 
 ## Getting Started
 
-To write unit tests, use the **preflight** package to wrap around the standard **testing** package.
+To write unit tests, use the **preflight** package to extend the standard **testing** package.
 
 An [**Expectation**](./docs/expectation.md) provides a common interface for making assertions about values and behaviors.
 
@@ -28,7 +28,7 @@ Learn more in the [docs](./docs/docs.md).
 func TestMethod(test *testing.T) {
     t := preflight.Unit(test)
 
-    t.Expect(2 * 5).Equals(25)
+    t.Expect(2 + 5).Equals(7)
 }
 ```
 

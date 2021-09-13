@@ -12,7 +12,7 @@ Assert equality using the `Eq`, `Equal`, `Equals`, and `EqualTo` methods. Arrays
 func TestEquals(test *testing.T) {
     t := preflight.Unit(test)
 
-    t.Expect(2 * 5).Equals(25)
+    t.Expect(2 + 5).Equals(7)
 }
 ```
 
@@ -35,7 +35,7 @@ The `Empty` method asserts a length of zero.
 
 ### Pattern Matching
 
-Assert if a value matches a given regular expression with the `Match` and `Matches` methods. If available, these methods use the representation provided by types that can [describe themselves as a string](https://tour.golang.org/methods/17).
+Assert if a value matches a given regular expression with the `Match` and `Matches` methods. If available, these methods use the representation provided by types that can [describe themselves as a string](https://pkg.go.dev/fmt#Stringer).
 
 ```go
 func TestPattern(test *testing.T) {
@@ -47,7 +47,7 @@ func TestPattern(test *testing.T) {
 
 ### Elements
 
-Given an array, slice, or map, the `At` method returns a new expectation about the element at the given index or key. Given a string, it returns a new expectation about the [rune](https://golangdocs.com/rune-in-golang) at the given index.
+Given an array, slice, or map, the `At` method returns a new expectation about the element at the given index or key. Given a string, it returns a new expectation about the [rune](https://golang.org/ref/spec#Rune_literals) at the given index.
 
 ```go
 func TestElement(test *testing.T) {
