@@ -1,5 +1,10 @@
 name: Commits
 on: [push]
+
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   lint:
     name: Static Checks
@@ -13,7 +18,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         
   test:
-    name: Test
+    name: Unit Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +31,6 @@ jobs:
           go-version: '^1.17'
 
       - name: Run tests
-        shell: pwsh
         env:
           GO111MODULE: on
         run: |
