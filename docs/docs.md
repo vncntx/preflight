@@ -121,13 +121,9 @@ func TestWritable(test *testing.T) {
 
 </details>
 
-### Metadata
-
 `Size` returns an expectation about the size of the contents in bytes.
 
 `ContentType` returns an expectation about the media type, inferred either from the file extension or from part of the contents.
-
-### Text
 
 `Text` returns an expectation about the entire contents, interpreted as UTF-8 encoded text.
 
@@ -135,15 +131,11 @@ func TestWritable(test *testing.T) {
 
 `TextAt` returns an expectation about the chunk of text starting at the given byte offset.
 
-### Bytes
-
 `Bytes` returns an expectation about the entire contents as a byte array.
 
 `NextBytes` returns an expectation about the next chunk of bytes with the given bytelength.
 
 `BytesAt` returns an expectation about the data at the given byte offset.
-
-### Lines
 
 `Lines` returns an expectation about the entire contents as an array of lines, excluding the newline characters.
 
